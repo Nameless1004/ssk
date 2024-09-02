@@ -2,8 +2,12 @@ package com.sparta.spartastudykeep.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Getter
+@Setter
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,5 +23,5 @@ public class User extends Timestamped {
     private String description;
 
     @Column(nullable = false)
-    private Boolean enabled;
+    private Boolean enabled = true;
 }
