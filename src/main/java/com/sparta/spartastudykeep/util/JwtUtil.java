@@ -171,6 +171,7 @@ public class JwtUtil {
         Cookie cookie = new Cookie(tokenType.name(), refreshToken);
         cookie.setMaxAge(REFRESH_TOKEN_TIME.intValue() / 1000);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 
@@ -186,5 +187,12 @@ public class JwtUtil {
 
     public String getCategory(String token) {
         return getJwtParser().parseSignedClaims(token).getPayload().get("category", String.class);
+    }
+
+    public void deleteCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null); // 쿠키의 값을 null로 설정
+        cookie.setMaxAge(0); // 만료 시간을 0으로 설정하여 쿠키 삭제
+        cookie.setPath("/"); // 경로를 설정 (쿠키가 설정된 경로와 일치해야 함)
+        response.addCookie(cookie); // 응답에 쿠키 추가
     }
 }

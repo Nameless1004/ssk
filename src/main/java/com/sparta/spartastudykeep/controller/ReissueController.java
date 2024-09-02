@@ -29,8 +29,10 @@ public class ReissueController {
     public ResponseEntity<?> reissue(HttpServletRequest request, HttpServletResponse response) {
 
         String refreshToken = null;
+        Cookie oldCookie = null;
         for (Cookie cookie : request.getCookies()) {
             if (cookie.getName().equals(TokenType.REFRESH.name())) {
+                oldCookie= cookie;
                 refreshToken = cookie.getValue();
                 break;
             }
@@ -71,9 +73,11 @@ public class ReissueController {
 
         // Refresh 토큰 저장소에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshRepository.deleteByRefresh(refreshToken);
+
         // 새로 발급한 토큰에 prefix를 제거 해준 후 저장
         addRefreshEntity(userEmail, jwtUtil.substringToken(newRefreshToken));
 
+        oldCookie.setMaxAge(0);
         response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
         response.addCookie(jwtUtil.createCookie(TokenType.REFRESH, newRefreshToken));
         return ResponseEntity.ok().build();

@@ -1,8 +1,6 @@
-package com.sparta.newsfeedtest.security;
-
+package com.sparta.spartastudykeep.security;
 
 import com.sparta.spartastudykeep.repository.RefreshRepository;
-import com.sparta.spartastudykeep.security.UserDetailsServiceImpl;
 import com.sparta.spartastudykeep.security.filter.JwtAuthenticationFilter;
 import com.sparta.spartastudykeep.security.filter.JwtAuthorizationFilter;
 import com.sparta.spartastudykeep.security.filter.JwtLogoutFilter;
