@@ -1,5 +1,7 @@
 package com.sparta.spartastudykeep.util;
 
+import com.sparta.spartastudykeep.common.enums.TokenType;
+import com.sparta.spartastudykeep.common.enums.UserRole;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
