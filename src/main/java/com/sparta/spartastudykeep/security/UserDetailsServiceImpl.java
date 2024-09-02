@@ -2,7 +2,6 @@ package com.sparta.spartastudykeep.security;
 
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.UserRepository;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
