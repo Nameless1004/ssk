@@ -25,7 +25,6 @@ public class User extends Timestamped {
     private String username;
 
     @Column(nullable = false, unique = true)
-    @Email
     private String email;
 
     @Column(nullable = false)
@@ -43,6 +42,10 @@ public class User extends Timestamped {
     // 내가 요청한 친구 목록
     @OneToMany(mappedBy = "requester")
     private List<Friendship> friends = new ArrayList<>();
+
+    // 내가 작성한 글
+    @OneToMany(mappedBy = "user")
+    private List<Board> boards = new ArrayList<>();
 
     public User(String username, String email, String password, String description, Boolean enabled,
         UserRole role) {

@@ -2,9 +2,15 @@ package com.sparta.spartastudykeep.controller;
 
 import com.sparta.spartastudykeep.dto.*;
 
+import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import com.sparta.spartastudykeep.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,12 +42,24 @@ public class BoardController {
     
     // 게시글 수정
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> updateBoardTitle(@PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.updateBoard(boardId, boardRequestDto));
+    public ResponseEntity<BoardResponseDto> updateBoardTitle(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
+        return ResponseEntity.ok(boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto));
     }
 
     // 게시글 삭제
     @DeleteMapping("/{boardId}")
-    public void deleteBoard(@PathVariable Long boardId) { boardService.deleteBoard(boardId); }
+    public void deleteBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId) {
+        boardService.deleteBoard( userDetails.getUser() , boardId);
+    }
+
+    // 뉴스피드 구현
+    // 현재 사용자의 친구 목록에 있는 친구들의 작성글을 다 가져오면 되는 부분
+    // 이걸 가져와서 페이징한다.
+    @GetMapping("/newsfeed")
+    public ResponseEntity<Page<NewsfeedDto>> getNewsfeed(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                          @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<NewsfeedDto> newsfeed = boardService.getNewsfeed(userDetails.getUser(), pageable);
+        return ResponseEntity.ok(newsfeed);
+    }
 }
 

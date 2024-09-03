@@ -65,11 +65,12 @@ public class FriendshipService {
      * @param user 현재 로그인 유저
      */
     @Transactional(readOnly = true)
-    public void getFriendAll(User user) {
+    public List<User> getFriendAll(User user) {
+        // todo 더 나은 방법 생각해보기
         List<Friendship> friends = friendShipRepository.findAllByReceiverIdAndStatus(
             user.getId(), FriendShipStatus.ACCEPTED);
 
-        // todo 유저 정보 dto 반환
+        return friends.stream().map(Friendship::getRequester).toList();
     }
 
     /**
