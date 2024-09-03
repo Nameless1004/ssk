@@ -1,6 +1,8 @@
 package com.sparta.spartastudykeep.service;
 
-import com.sparta.spartastudykeep.dto.*;
+import com.sparta.spartastudykeep.dto.BoardGetTitleResponseDto;
+import com.sparta.spartastudykeep.dto.BoardRequestDto;
+import com.sparta.spartastudykeep.dto.BoardResponseDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +20,15 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public BoardSaveResponseDto saveBoard(BoardSaveRequestDto boardSaveRequestDto) {
-        Board newBoard = new Board( boardSaveRequestDto.getUsername(),
-                boardSaveRequestDto.getTitle(),
-                boardSaveRequestDto.getContent()
-        );
+    public BoardResponseDto saveBoard(BoardRequestDto boardRequestDto) {
+        Board newBoard = new Board();
+        newBoard.setUser_name(boardRequestDto.getUser_name());
+        newBoard.setBoard_title(boardRequestDto.getBoard_title());
+        newBoard.setBoard_contents(boardRequestDto.getBoard_contents());
 
         Board saveBoard = boardRepository.save(newBoard);
 
-        return new BoardSaveResponseDto( saveBoard.getId(),
-                saveBoard.getUsername(),
-                saveBoard.getTitle(),
-                saveBoard.getContent()
-        );
+        return new BoardResponseDto(saveBoard);
     }
 
     public List<BoardGetTitleResponseDto> getAllBoard() {
@@ -39,51 +37,35 @@ public class BoardService {
         List<BoardGetTitleResponseDto> dtoList = new ArrayList<>();
 
         for (Board board : boardList) {
-            BoardGetTitleResponseDto dto = new BoardGetTitleResponseDto(board.getTitle());
+            BoardGetTitleResponseDto dto = new BoardGetTitleResponseDto(board.getBoard_title());
             dtoList.add(dto);
         }
         return dtoList;
     }
 
-    public BoardGetDetailResponseDto getDetailBoard(Long boardId) {
+    public BoardResponseDto getDetailBoard(Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
-
-        return new BoardGetDetailResponseDto( board.getId(),
-                board.getUsername(),
-                board.getTitle(),
-                board.getContent()
-        );
+            // Notfoundexception 로 바꿔주기, 일단 냅두기
+        return new BoardResponseDto(board);
     }
 
     @Transactional
-    public BoardUpdateTitleResponseDto updateBoardTitle(Long boardId, BoardUpdateTitleRequestDto boardUpdateTitleRequestDto) {
+    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
-        board.updateTitle(boardUpdateTitleRequestDto.getTitle());
+        board.setBoard_title(boardRequestDto.getBoard_title());
+        board.setBoard_contents(boardRequestDto.getBoard_contents());
 
-        return new BoardUpdateTitleResponseDto( board.getId(),
-                board.getUsername(),
-                board.getUsername(),
-                board.getContent()
-        );
+        Board updatedBoard = boardRepository.save(board);
+
+        return new BoardResponseDto (updatedBoard);
     }
 
     @Transactional
-    public BoardUpdateContentResponseDto updateBoardContent(Long boardId, BoardUpdateContentRequestDto boardUpdateContentRequestDto) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
-
-        board.updateContent(boardUpdateContentRequestDto.getContent());
-
-        return new BoardUpdateContentResponseDto( board.getId(),
-                board.getUsername(),
-                board.getTitle(),
-                board.getContent()
-        );
+    public void deleteBoard(Long boardId) {
+        boardRepository.deleteById(boardId);
     }
 
-    @Transactional
-    public void deleteBoard(Long boardId) { boardRepository.deleteById(boardId);
-    }
 }
 
 

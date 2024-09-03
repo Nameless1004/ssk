@@ -1,32 +1,20 @@
 package com.sparta.spartastudykeep.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class Board {
+@Setter
+public class Board extends Timestamped {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String username;
-    private String title;
-    private String content;
+    private Long id;            // 게시글을 식별할 수 있는 ID
+//    private Long user_id;
+    @Column(nullable = false)
+    private String user_name;
+    private String board_title;
+    private String board_contents;
 
-    public Board(String username, String title, String content) {
-        this.username = username;
-        this.title = title;
-        this.content = content;
-    }
-
-    public void updateTitle(String title) { this.title = title;
-    }
-
-    public void updateContent(String content) { this.content = content;
-    }
 }
