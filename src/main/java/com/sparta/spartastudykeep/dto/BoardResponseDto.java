@@ -12,16 +12,16 @@ public class BoardResponseDto {
     private final String user_name;
     private final String board_title;
     private final String board_contents;
-    private final LocalDateTime created_at;
-    private final LocalDateTime modified_at;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime modifiedAt;
 
     public BoardResponseDto(Board board) {
         this.id = board.getId();
         this.user_name = board.getUser_name();
         this.board_title = board.getBoard_title();
         this.board_contents = board.getBoard_contents();
-        this.created_at = board.getCreatedAt();
-        this.modified_at = board.getModifiedAt();
+        this.createdAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
     }
 }
 
