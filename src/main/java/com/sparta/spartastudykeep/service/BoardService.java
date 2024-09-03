@@ -3,9 +3,14 @@ package com.sparta.spartastudykeep.service;
 import com.sparta.spartastudykeep.dto.BoardGetTitleResponseDto;
 import com.sparta.spartastudykeep.dto.BoardRequestDto;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
+import com.sparta.spartastudykeep.dto.NewsfeedDto;
 import com.sparta.spartastudykeep.entity.Board;
+import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
+import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,7 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final FriendshipService friendshipService;
 
     @Transactional
     public BoardResponseDto saveBoard(BoardRequestDto boardRequestDto) {
@@ -50,22 +56,44 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(Long boardId, BoardRequestDto boardRequestDto) {
+    public BoardResponseDto updateBoard(User user, Long boardId, BoardRequestDto boardRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
+        // 현재 로그인한 유저와 작성한 유저가 다른 경우
+        // 편하신대로 하시면 됩니다.
+        if(!user.getId().equals(board.getUser().getId())){
+            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+        }
+
+        // 작성한 유저가 맞다.
         board.setBoard_title(boardRequestDto.getBoard_title());
         board.setBoard_contents(boardRequestDto.getBoard_contents());
 
         Board updatedBoard = boardRepository.save(board);
-
         return new BoardResponseDto (updatedBoard);
     }
 
     @Transactional
-    public void deleteBoard(Long boardId) {
+    public void deleteBoard(User user, Long boardId) {
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+
+        //
+        if(!user.getId().equals(board.getUser().getId())){
+            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+        }
+
         boardRepository.deleteById(boardId);
     }
 
+    public Page<NewsfeedDto> getNewsfeed(User user, Pageable pageable) {
+
+        List<User> friends = friendshipService.getFriendAll(user);
+        List<Long> ids = friends.stream().map(User::getId).toList();
+        Page<Board> newsfeed = boardRepository.findAllByUserIdIn(ids, pageable);
+
+        // 친구들이 작성한 글 목록 저장함
+        return newsfeed.map(NewsfeedDto::new);
+    }
 }
 
 
