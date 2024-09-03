@@ -20,8 +20,8 @@ public class BoardResponseDto {
         this.user_name = board.getUser_name();
         this.board_title = board.getBoard_title();
         this.board_contents = board.getBoard_contents();
-        this.created_at = board.getCreated_at();
-        this.modified_at = board.getModified_at();
+        this.created_at = board.getCreatedAt();
+        this.modified_at = board.getModifiedAt();
     }
 }
 
