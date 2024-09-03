@@ -45,10 +45,10 @@ public class FriendTest {
 
         List<Friendship> friends = user.getFriends();
         for(Friendship friendship : friends) {
-            System.out.println("friendship = " + friendship.getFriend().getUsername());
+            System.out.println("friendship = " + friendship.getReceiver().getUsername());
         }
 
-        Assertions.assertThat(friends.get(0).getFriend()).isSameAs(em.findById(2L).get());
+        Assertions.assertThat(friends.get(0).getReceiver()).isSameAs(em.findById(2L).get());
         // then
     }
 }

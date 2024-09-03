@@ -42,9 +42,9 @@ class FriendshipServiceTest {
         // when
 
         // user1 -> user2에게 친구 신청
-        fs.requestFriendship(save1.getId(), save2.getId());
+        fs.requestFriendship(save1, save2.getId());
 
-        Optional<Friendship> byUserIdAndFriendId = fr.findByUserIdAndFriendId(save1.getId(),
+        Optional<Friendship> byUserIdAndFriendId = fr.findByRequesterIdAndReceiverId(save1.getId(),
             save2.getId());
 
         // 친구 신청을 했으면 WAITING 상태여야 함
@@ -67,16 +67,16 @@ class FriendshipServiceTest {
         // when
 
         // user1 -> user2에게 친구 신청
-        fs.requestFriendship(save1.getId(), save2.getId());
+        fs.requestFriendship(save1, save2.getId());
         // user2가 -> user1의 친구 신청 수락
-        fs.acceptFriendShip(save2.getId(), save1.getId());
+        fs.acceptFriendShip(save2, save1.getId());
 
         // then
-        Optional<Friendship> byUserIdAndFriendId = fr.findByUserIdAndFriendId(save2.getId(),
+        Optional<Friendship> byUserIdAndFriendId = fr.findByRequesterIdAndReceiverId(save2.getId(),
             save1.getId());
 
 
-        Optional<Friendship> byUserIdAndFriendId1 = fr.findByUserIdAndFriendId(save1.getId(),
+        Optional<Friendship> byUserIdAndFriendId1 = fr.findByRequesterIdAndReceiverId(save1.getId(),
             save2.getId());
 
         // 요청을 수락했으면 서로 연결되어있어야함
@@ -96,13 +96,13 @@ class FriendshipServiceTest {
 
         Optional<Friendship> first = user.getFriends()
             .stream()
-            .filter(x -> x.getFriend()
+            .filter(x -> x.getReceiver()
                 .equals(user2))
             .findFirst();
 
         Optional<Friendship> second = user2.getFriends()
             .stream()
-            .filter(x -> x.getFriend()
+            .filter(x -> x.getReceiver()
                 .equals(user))
             .findFirst();
         // 요청을 수락했으면 서로 친구목록에 있어야함
@@ -123,13 +123,13 @@ class FriendshipServiceTest {
         // when
 
         // user1 -> user2에게 친구 신청
-        fs.requestFriendship(save1.getId(), save2.getId());
+        fs.requestFriendship(save1, save2.getId());
         // user2가 -> user1의 친구 신청 거부
-        fs.rejectFriendshipRequest(save2.getId(), save1.getId());
+        fs.rejectFriendshipRequest(save2, save1.getId());
 
         // then
 
-        Optional<Friendship> byUserIdAndFriendId = fr.findByUserIdAndFriendId(save1.getId(),
+        Optional<Friendship> byUserIdAndFriendId = fr.findByRequesterIdAndReceiverId(save1.getId(),
             save2.getId());
 
         // friendship 테이블에 save1이 save2에게 친구 요청 기록이 있으면 안됨
@@ -150,13 +150,13 @@ class FriendshipServiceTest {
         // when
 
         // user1 -> user2에게 친구 신청
-        fs.requestFriendship(save1.getId(), save2.getId());
+        fs.requestFriendship(save1, save2.getId());
         // user2가 -> user1의 친구 신청 거부
         // fs.rejectFriendshipRequest(save2.getId(), save1.getId());
 
         // then
 
-        Optional<Friendship> byUserIdAndFriendId = fr.findByUserIdAndFriendId(save1.getId(),
+        Optional<Friendship> byUserIdAndFriendId = fr.findByRequesterIdAndReceiverId(save1.getId(),
             save2.getId());
 
         // 거부를 안했으므로

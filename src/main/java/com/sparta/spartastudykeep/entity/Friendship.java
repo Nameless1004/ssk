@@ -22,19 +22,19 @@ public class Friendship {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user; // 친구 요청을 한 사용자
+    @JoinColumn(name = "requester_id")
+    private User requester; // 요청을 한 사용자
 
     @ManyToOne
-    @JoinColumn(name = "friend_id")
-    private User friend; // 친구 요청을 받은 사용자
+    @JoinColumn(name = "receiver_id")
+    private User receiver; // 요청을 받은 사용자
 
     @Enumerated(EnumType.STRING)
     private FriendShipStatus status;
 
-    public Friendship(User user, User friend) {
-        this.user = user;
-        this.friend = friend;
+    public Friendship(User requester, User receiver) {
+        this.requester = requester;
+        this.receiver = receiver;
         status = FriendShipStatus.WAITING;
     }
 

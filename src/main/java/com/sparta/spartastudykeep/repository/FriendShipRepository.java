@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FriendShipRepository extends JpaRepository<Friendship, Long> {
-    void deleteByUserIdAndFriendId(Long userId, Long friendId);
-    Optional<Friendship> findByUserIdAndFriendId(Long userId, Long friendId);
+    void deleteByRequesterIdAndReceiverId(Long requesterId, Long receiverId);
+    Optional<Friendship> findByRequesterIdAndReceiverId(Long requesterId, Long receiverId);
 
-    List<Friendship> findAllByUserIdAndStatus(Long userId, String name);
+    List<Friendship> findAllByReceiverIdAndStatus(Long receiverId, String name);
 }
