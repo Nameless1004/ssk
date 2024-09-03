@@ -39,6 +39,10 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+
+    @OneToMany(mappedBy = "user")
+    private List<Bookmark> bookmarks = new ArrayList<>();
+
     // 내가 요청한 친구 목록
     @OneToMany(mappedBy = "requester")
     private List<Friendship> friends = new ArrayList<>();

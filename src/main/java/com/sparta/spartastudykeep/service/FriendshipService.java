@@ -1,11 +1,13 @@
 package com.sparta.spartastudykeep.service;
 
 import com.sparta.spartastudykeep.common.enums.FriendShipStatus;
+import com.sparta.spartastudykeep.dto.FriendRequestDto;
+import com.sparta.spartastudykeep.dto.FriendResponseDto;
+import com.sparta.spartastudykeep.dto.FriendshipReceiveDto;
 import com.sparta.spartastudykeep.entity.Friendship;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.FriendShipRepository;
 import com.sparta.spartastudykeep.repository.UserRepository;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,11 +23,12 @@ public class FriendshipService {
 
     /**
      * 친구 요청
-     * @param user 현재 로그인 유저
-     * @param receiverId 친구요청 받을 유저의 아이디
+     *
+     * @param user       현재 로그인 유저
+     * @param requestDto 친구요청 받을 유저의 아이디
      */
-    public void requestFriendship(User user, Long receiverId) {
-        User receiver = getUserOrElseThrow(receiverId);
+    public void requestFriendship(User user, FriendRequestDto requestDto) {
+        User receiver = getUserOrElseThrow(requestDto.getReceiverId());
         Friendship friendship = new Friendship(user, receiver);
         friendShipRepository.save(friendship);
     }
@@ -33,23 +36,35 @@ public class FriendshipService {
     /**
      * 친구요청 거절
      * @param user 현재 로그인 유저
-     * @param rejectedUserId 친구요청 받을 유저의 아이디
+     * @param requesterId 친구요청한 유저의 아이디
      */
-    public void rejectFriendshipRequest(User user, Long rejectedUserId) {
-        friendShipRepository.deleteByRequesterIdAndReceiverId(rejectedUserId, user.getId());
+    public void rejectFriendshipRequest(User user, Long requesterId) {
+        User requester = getUserOrElseThrow(requesterId);
+        boolean isExists = friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user,
+            FriendShipStatus.ACCEPTED);
+
+        if(isExists){
+            throw new IllegalArgumentException("이미 수락한 요청입니다.");
+        }
+
+        friendShipRepository.deleteByRequesterAndReceiver(requester, user);
     }
 
     /**
      * 친구요청 수락
      * @param user 현재 로그인 유저
-     * @param requestUserId 친구요청한 유저의 아이디
+     * @param requesterId 친구요청한 유저의 아이디
      */
-    public void acceptFriendShip(User user, Long requestUserId) {
-        Friendship request = friendShipRepository.findByRequesterIdAndReceiverId(requestUserId,
-                user.getId())
+    public void acceptFriendShip(User user, Long requesterId) {
+        User requester = getUserOrElseThrow(requesterId);
+
+        Friendship request = friendShipRepository.findByRequesterAndReceiver(requester, user)
             .orElseThrow(() -> new IllegalArgumentException("수락할 요청이 없습니다."));
 
-        User requester = request.getRequester();
+        if(request.getStatus() == FriendShipStatus.ACCEPTED){
+            throw new IllegalArgumentException("이미 수락한 요청입니다.");
+        }
+
         Friendship receive = new Friendship(user, requester);
 
         // 서로 요청 상태 accepted로 변경
@@ -65,12 +80,11 @@ public class FriendshipService {
      * @param user 현재 로그인 유저
      */
     @Transactional(readOnly = true)
-    public List<User> getFriendAll(User user) {
-        // todo 더 나은 방법 생각해보기
-        List<Friendship> friends = friendShipRepository.findAllByReceiverIdAndStatus(
-            user.getId(), FriendShipStatus.ACCEPTED);
+    public List<FriendResponseDto> getFriendAll(User user) {
+        List<Friendship> friends = friendShipRepository.findAllByReceiverAndStatus(
+            user, FriendShipStatus.ACCEPTED);
 
-        return friends.stream().map(Friendship::getRequester).toList();
+        return friends.stream().map(x-> new FriendResponseDto(x.getRequester())).toList();
     }
 
     /**
@@ -80,8 +94,32 @@ public class FriendshipService {
      */
     public void removeFriendship(User user, Long removeUserId) {
         User removeUser = getUserOrElseThrow(removeUserId);
-        friendShipRepository.deleteByRequesterIdAndReceiverId(user.getId(), removeUser.getId());
-        friendShipRepository.deleteByRequesterIdAndReceiverId(removeUser.getId(), user.getId());
+        friendShipRepository.deleteByRequesterAndReceiver(removeUser, user);
+        friendShipRepository.deleteByRequesterAndReceiver(user,removeUser);
+    }
+
+    /**
+     * 친구요청 목록
+     * @param user
+     */
+    public List<FriendshipReceiveDto> getRecieveList(User user) {
+        List<Friendship> findAll = friendShipRepository.findAllByReceiverAndStatus(
+            user, FriendShipStatus.WAITING);
+
+        return findAll.stream().map(x->
+            FriendshipReceiveDto.builder()
+                .friendshipId(x.getId())
+                .requesterId(x.getRequester().getId())
+                .receiverId(user.getId())
+                .build()).toList();
+    }
+
+    /**
+     * 친구 요청, 친구 요청받은 것, 친구 관계 삭제
+     * @param user 현재 로그인한 유저
+     */
+    public void removeAllFriendship(User user) {
+        friendShipRepository.deleteAllByRequesterOrReceiver(user, user);
     }
 
     private User getUserOrElseThrow(Long id){
@@ -89,10 +127,4 @@ public class FriendshipService {
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
     }
 
-    /**
-     * 친구들이 작성한 글 목록 가져오기
-     * @param user
-     */
-    public void getFriendPosts(User user) {
-    }
 }

@@ -6,7 +6,6 @@ import com.sparta.spartastudykeep.entity.Bookmark;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import com.sparta.spartastudykeep.repository.BookmarkRepository;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
