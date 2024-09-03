@@ -57,7 +57,7 @@ public class BoardController {
     // 이걸 가져와서 페이징한다.
     @GetMapping("/newsfeed")
     public ResponseEntity<Page<NewsfeedDto>> getNewsfeed(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                          @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                          @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<NewsfeedDto> newsfeed = boardService.getNewsfeed(userDetails.getUser(), pageable);
         return ResponseEntity.ok(newsfeed);
     }
