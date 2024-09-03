@@ -9,6 +9,7 @@ import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,6 +89,12 @@ public class UserService {
             } else {
                 throw new IllegalArgumentException("잘못된 어드민 토큰입니다.");
             }
+        }
+
+        boolean isExistsEmail = userRepository.existsByEmail(requestDto.getEmail());
+
+        if(isExistsEmail){
+            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
         }
 
         String password = passwordEncoder.encode(requestDto.getPassword());
