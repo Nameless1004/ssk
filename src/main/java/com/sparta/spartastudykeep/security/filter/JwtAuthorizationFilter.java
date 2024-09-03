@@ -73,10 +73,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         String userEmail = jwtUtil.getUserEmail(accessToken);
-        String role = jwtUtil.getRole(accessToken);
 
-        User user = User.builder().email(userEmail).role(UserRole.valueOf(role)).build();
-        Authentication authentication = createAuthentication(user);
+        Authentication authentication = createAuthentication(userEmail);
         setAuthentication(authentication);
 
         filterChain.doFilter(req, res);
@@ -91,8 +89,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     }
 
     // 인증 객체 생성
-    private Authentication createAuthentication(User user) {
-        UserDetails userDetails = new UserDetailsImpl(user);
+    private Authentication createAuthentication(String userEmail) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
         return new UsernamePasswordAuthenticationToken(userDetails, null,
             userDetails.getAuthorities());
     }
