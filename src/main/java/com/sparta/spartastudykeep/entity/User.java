@@ -1,13 +1,19 @@
 package com.sparta.spartastudykeep.entity;
 
 
+import com.sparta.spartastudykeep.common.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class User extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +21,10 @@ public class User extends Timestamped {
 
     @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false, unique = true)
+    @Email
+    private String email;
 
     @Column(nullable = false)
     private String password;
@@ -24,4 +34,17 @@ public class User extends Timestamped {
 
     @Column(nullable = false)
     private Boolean enabled = true;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    public User(String username, String email, String password, String description, Boolean enabled,
+        UserRole role) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.description = description;
+        this.enabled = enabled;
+        this.role = role;
+    }
 }
