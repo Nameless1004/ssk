@@ -3,19 +3,18 @@ package com.sparta.spartastudykeep.service;
 import com.sparta.spartastudykeep.dto.BoardGetTitleResponseDto;
 import com.sparta.spartastudykeep.dto.BoardRequestDto;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
+import com.sparta.spartastudykeep.dto.FriendResponseDto;
 import com.sparta.spartastudykeep.dto.NewsfeedDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -87,8 +86,8 @@ public class BoardService {
 
     public Page<NewsfeedDto> getNewsfeed(User user, Pageable pageable) {
 
-        List<User> friends = friendshipService.getFriendAll(user);
-        List<Long> ids = friends.stream().map(User::getId).toList();
+        List<FriendResponseDto> friends = friendshipService.getFriendAll(user);
+        List<Long> ids = friends.stream().map(FriendResponseDto::getUserId).toList();
         Page<Board> newsfeed = boardRepository.findAllByUserIdIn(ids, pageable);
 
         // 친구들이 작성한 글 목록 저장함

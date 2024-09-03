@@ -6,6 +6,7 @@ import com.sparta.spartastudykeep.dto.SignupRequestDto;
 import com.sparta.spartastudykeep.dto.UserRequestDto;
 import com.sparta.spartastudykeep.dto.UserResponseDto;
 import com.sparta.spartastudykeep.entity.User;
+import com.sparta.spartastudykeep.repository.BookmarkRepository;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,11 +16,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
+    private final FriendshipService friendshipService;
     private final PasswordEncoder passwordEncoder;
     @Value("${admin.token}")
     private String adminToken;
@@ -34,6 +39,7 @@ public class UserService {
         return new UserResponseDto(savedUser);
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDto getUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("User with id " + id + " not found")
@@ -41,6 +47,7 @@ public class UserService {
         return new UserResponseDto(user);
     }
 
+    @Transactional(readOnly = true)
     public List<UserResponseDto> getAllUsers() {
         List<User> users = userRepository.findAll();
 
@@ -60,12 +67,16 @@ public class UserService {
         return new UserResponseDto(savedUser);
     }
 
-
     public Long deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("User with id " + id + " not found")
         );
         user.setEnabled(false);
+
+        // 유저 삭제 시 북마크, 친구 삭제
+        friendshipService.removeAllFriendship(user);
+        bookmarkRepository.deleteAllByUser(user);
+
         userRepository.save(user);
         return user.getId();
     }

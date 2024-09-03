@@ -1,6 +1,7 @@
 package com.sparta.spartastudykeep.entity;
 
 import com.sparta.spartastudykeep.common.enums.FriendShipStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

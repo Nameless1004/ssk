@@ -1,11 +1,14 @@
 package com.sparta.spartastudykeep;
 
 import com.sparta.spartastudykeep.common.enums.UserRole;
+import com.sparta.spartastudykeep.dto.FriendRequestDto;
+import com.sparta.spartastudykeep.dto.FriendResponseDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import com.sparta.spartastudykeep.repository.FriendShipRepository;
 import com.sparta.spartastudykeep.repository.UserRepository;
+import com.sparta.spartastudykeep.service.BookmarkService;
 import com.sparta.spartastudykeep.service.FriendshipService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,7 @@ public class BoardServiceTest {
     @Autowired  private FriendShipRepository fr;
     @Autowired  private BoardRepository br;
     @Autowired private PasswordEncoder pe;
+    @Autowired private BookmarkService bs;
 
     // String username, String email, String password, String description, Boolean enabled,
     //        UserRole role
@@ -57,10 +61,11 @@ public class BoardServiceTest {
        ur.save(user5);
        ur.save(user6);
 
-        fs.requestFriendship(user, user1.getId());
-        fs.requestFriendship(user, user2.getId());
-        fs.requestFriendship(user, user3.getId());
-        fs.requestFriendship(user, user4.getId());
+        fs.requestFriendship(user, new FriendRequestDto(user1.getId()));
+        fs.requestFriendship(user, new FriendRequestDto(user2.getId()));
+        fs.requestFriendship(user, new FriendRequestDto(user3.getId()));
+        fs.requestFriendship(user, new FriendRequestDto(user4.getId()));
+        fs.requestFriendship(user, new FriendRequestDto(user5.getId()));
         fr.flush();
         fs.acceptFriendShip(user1, user.getId());
         fs.acceptFriendShip(user2, user.getId());
@@ -85,14 +90,20 @@ public class BoardServiceTest {
 
         br.saveAll(b);
         br.flush();
+
+        bs.addBookmark(user1, b.get(2).getId());
+        bs.addBookmark(user1, b.get(3).getId());
+        bs.addBookmark(user1, b.get(4).getId());
+        bs.addBookmark(user1, b.get(5).getId());
+        bs.addBookmark(user1, b.get(6).getId());
     }
 
     @Test
     public void test2(){
         User user = ur.findById(1L).get();
-        List<User> friends = fs.getFriendAll(user);
+        List<FriendResponseDto> friends = fs.getFriendAll(user);
         System.out.println(friends.size());
-        List<Long> ids = friends.stream().map(x->x.getId()).toList();
+        List<Long> ids = friends.stream().map(FriendResponseDto::getUserId).toList();
         for(Long id : ids)
         {
             System.out.println("id = " + id);
