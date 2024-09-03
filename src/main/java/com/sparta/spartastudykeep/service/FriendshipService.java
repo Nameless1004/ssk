@@ -73,9 +73,9 @@ public class FriendshipService {
     }
 
     /**
-     * 친구삭제
+     * 친구삭제 or 요청 거절
      * @param user 현재 로그인 유저
-     * @param removeUserId 삭제할 친구(유저) 아이디
+     * @param removeUserId 삭제(거절)할 친구(유저) 아이디
      */
     public void removeFriendship(User user, Long removeUserId) {
         User removeUser = getUserOrElseThrow(removeUserId);

@@ -25,21 +25,9 @@ public class FriendshipController {
      * @param id 친구요청 받을 유저의 아이디
      * @return
      */
-    @PostMapping("/api/users/friends/{id}")
+    @PostMapping("/api/friends/{id}")
     public ResponseEntity<Void> addFriend(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){
         friendshipService.requestFriendship(userDetails.getUser(), id);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 친구요청 거절
-     * @param userDetails 현재 로그인 유저
-     * @param id 친구요청 거절할 유저의 아이디
-     * @return
-     */
-    @DeleteMapping("/api/friends/{id}")
-    public ResponseEntity<Void> rejectFriendship(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){
-        friendshipService.rejectFriendshipRequest(userDetails.getUser(), id);
         return ResponseEntity.ok().build();
     }
 
@@ -77,9 +65,9 @@ public class FriendshipController {
     }
 
     /**
-     * 친구 삭제
+     * 친구 삭제 or 요청 거절
      * @param userDetails 현재 로그인 유저
-     * @param id 삭제할 친구 아이디
+     * @param id 삭제(거절)할 친구(유저) 아이디
      */
     @DeleteMapping("/api/friends/{id}")
     public void removeFriend(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){

@@ -40,7 +40,8 @@ public class User extends Timestamped {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToMany
+    // 내가 요청한 친구 목록
+    @OneToMany(mappedBy = "requester")
     private List<Friendship> friends = new ArrayList<>();
 
     public User(String username, String email, String password, String description, Boolean enabled,
