@@ -1,5 +1,6 @@
 package com.sparta.spartastudykeep.service;
 
+import com.sparta.spartastudykeep.dto.PasswordRequestDto;
 import com.sparta.spartastudykeep.dto.UserRequestDto;
 import com.sparta.spartastudykeep.dto.UserResponseDto;
 import com.sparta.spartastudykeep.entity.User;
@@ -37,8 +38,38 @@ public class UserService {
 
         List<UserResponseDto> userResponseDtos = new ArrayList<>();
         for (User user : users) {
-            userResponseDtos.add(new UserResponseDto(user));
+            if(user.getEnabled()) userResponseDtos.add(new UserResponseDto(user));
         }
         return userResponseDtos;
+    }
+
+    public UserResponseDto updateUser(Long id, UserRequestDto requestDto) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+        user.setDescription(requestDto.getDescription());
+        User savedUser = userRepository.save(user);
+        return new UserResponseDto(savedUser);
+    }
+
+
+    public Long deleteUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+        user.setEnabled(false);
+        userRepository.save(user);
+        return user.getId();
+    }
+
+    public UserResponseDto updatePassword(Long id, PasswordRequestDto requestDto) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("User with id " + id + " not found")
+        );
+        if(user.getPassword().equals(requestDto.getPassword())){
+            user.setPassword(requestDto.getNewPassword());
+        }
+        User savedUser = userRepository.save(user);
+        return new UserResponseDto(savedUser);
     }
 }
