@@ -1,5 +1,6 @@
 package com.sparta.spartastudykeep.security;
 
+import com.sparta.spartastudykeep.common.exception.UserEmailNotFoundException;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

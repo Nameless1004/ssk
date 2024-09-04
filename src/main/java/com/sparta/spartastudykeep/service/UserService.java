@@ -1,6 +1,10 @@
 package com.sparta.spartastudykeep.service;
 
 import com.sparta.spartastudykeep.common.enums.UserRole;
+import com.sparta.spartastudykeep.common.exception.AlreadyAcceptedException;
+import com.sparta.spartastudykeep.common.exception.InvalidAdminTokenException;
+import com.sparta.spartastudykeep.common.exception.InvalidPasswordException;
+import com.sparta.spartastudykeep.common.exception.UserIdNotFoundException;
 import com.sparta.spartastudykeep.dto.*;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BookmarkRepository;
@@ -41,7 +45,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDto getUserById(UserDetailsImpl userDetails, Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("User with id " + id + " not found")
+                () -> new UserIdNotFoundException(id)
         );
         if(Objects.equals(userDetails.getUser().getId(), id)) return new UserResponseDto(user);
         else {
@@ -64,7 +68,7 @@ public class UserService {
 
     public UserResponseDto updateUser(UserDetailsImpl userDetails, UserRequestDto requestDto) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new IllegalArgumentException("User with id " + userDetails.getUser().getId() + " not found")
+                () -> new UserIdNotFoundException(userDetails.getUser().getId())
         );
         user.setDescription(requestDto.getDescription());
         User savedUser = userRepository.save(user);
@@ -74,7 +78,7 @@ public class UserService {
     public Long deleteUser(UserDetailsImpl userDetails, DeleteUserRequestDto requestDto) {
         if(passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
             User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                    () -> new IllegalArgumentException("User with id " + userDetails.getUser().getId() + " not found")
+                    () -> new UserIdNotFoundException(userDetails.getUser().getId())
             );
             user.setEnabled(false);
 
@@ -86,13 +90,13 @@ public class UserService {
             return user.getId();
         }
         else {
-            throw new IllegalArgumentException("Wrong password");
+            throw new InvalidPasswordException("Wrong password");
         }
     }
 
     public UserResponseDto updatePassword(UserDetailsImpl userDetails, PasswordRequestDto requestDto) {
         User user = userRepository.findById(userDetails.getUser().getId()).orElseThrow(
-                () -> new IllegalArgumentException("User with id " + userDetails.getUser().getId() + " not found")
+                () -> new UserIdNotFoundException(userDetails.getUser().getId())
         );
         if(passwordEncoder.matches(requestDto.getPassword(), user.getPassword())){
             user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
@@ -100,8 +104,7 @@ public class UserService {
             return new UserResponseDto(savedUser);
         }
         else {
-            new IllegalArgumentException("Password doesn't match");
-            return null;
+            throw new InvalidPasswordException("Password doesn't match");
         }
     }
 
@@ -111,14 +114,14 @@ public class UserService {
             if(requestDto.getAdminToken().equals(adminToken)){
                 role = UserRole.ADMIN;
             } else {
-                throw new IllegalArgumentException("잘못된 어드민 토큰입니다.");
+                throw new InvalidAdminTokenException();
             }
         }
 
         boolean isExistsEmail = userRepository.existsByEmail(requestDto.getEmail());
 
         if(isExistsEmail){
-            throw new IllegalArgumentException("이미 등록된 이메일입니다.");
+            throw new AlreadyAcceptedException("이미 등록된 이메일입니다.");
         }
 
         String password = passwordEncoder.encode(requestDto.getPassword());

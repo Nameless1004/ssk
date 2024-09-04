@@ -1,4 +1,4 @@
-package com.sparta.spartastudykeep.security;
+package com.sparta.spartastudykeep.common.exception;
 
 import org.springframework.security.core.AuthenticationException;
 

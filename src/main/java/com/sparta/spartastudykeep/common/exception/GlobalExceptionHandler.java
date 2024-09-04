@@ -1,4 +1,4 @@
-package com.sparta.spartastudykeep.common.enums.exception;
+package com.sparta.spartastudykeep.common.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import java.util.HashMap;
