@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,27 +24,28 @@ public class BoardController {
     private final BoardService boardService;
 
     // 게시글 작성
+    @Transactional
     @PostMapping
-    public ResponseEntity<BoardResponseDto> saveBoard(@RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.saveBoard(boardRequestDto));
+    public ResponseEntity<BoardResponseDto> saveBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto boardRequestDto){
+        return ResponseEntity.ok(boardService.saveBoard(userDetails.getUser(), boardRequestDto));
     }
 
-    // 게시글 제목 전체 조회
-    @GetMapping
-    public ResponseEntity<List<BoardGetTitleResponseDto>> getAllBoard(){
-        return ResponseEntity.ok(boardService.getAllBoard());
-    }
+//    // 게시글 제목 전체 조회
+//    @GetMapping
+//    public ResponseEntity<List<BoardGetTitleResponseDto>> getAllBoard(){
+//        return ResponseEntity.ok(boardService.getAllBoard());
+//    }
 
     // 게시글 단건 조회
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> getDetailBoard(@PathVariable Long boardId){
-        return ResponseEntity.ok(boardService.getDetailBoard(boardId));
+    public ResponseEntity<BoardResponseDto> getDetailBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId){
+        return ResponseEntity.ok(boardService.getDetailBoard(boardId, userDetails.getUser()));
     }
     
     // 게시글 수정
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponseDto> updateBoardTitle(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto));
+        return ResponseEntity.ok(boardService.updateBoard(userDetails.getUser(), userDetails.getUsername(), boardId, boardRequestDto));
     }
 
     // 게시글 삭제

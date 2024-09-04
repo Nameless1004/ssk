@@ -48,7 +48,7 @@ public class BookmarkService {
      */
     public Page<BoardResponseDto> getAllBookmarkedBoards(User user, Pageable pageable) {
         Page<Bookmark> bookmarks = bookmarkRepository.findAllByUser(user, pageable);
-        return bookmarks.map(x -> new BoardResponseDto(x.getBoard()));
+        return bookmarks.map(x -> new BoardResponseDto(x.getBoard(), x.getUser()));
     }
 
     /**
