@@ -24,8 +24,8 @@ public class BoardController {
 
     // 게시글 작성
     @PostMapping
-    public ResponseEntity<BoardResponseDto> saveBoard(@RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.saveBoard(boardRequestDto));
+    public ResponseEntity<BoardResponseDto> saveBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto boardRequestDto){
+        return ResponseEntity.ok(boardService.saveBoard(userDetails.getUser(), userDetails.getUsername(), boardRequestDto));
     }
 
     // 게시글 제목 전체 조회
@@ -36,14 +36,14 @@ public class BoardController {
 
     // 게시글 단건 조회
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> getDetailBoard(@PathVariable Long boardId){
-        return ResponseEntity.ok(boardService.getDetailBoard(boardId));
+    public ResponseEntity<BoardResponseDto> getDetailBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId){
+        return ResponseEntity.ok(boardService.getDetailBoard(boardId, userDetails.getUser(), userDetails.getUsername()));
     }
     
     // 게시글 수정
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardResponseDto> updateBoardTitle(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId, @RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.updateBoard(userDetails.getUser(), boardId, boardRequestDto));
+        return ResponseEntity.ok(boardService.updateBoard(userDetails.getUser(), userDetails.getUsername(), boardId, boardRequestDto));
     }
 
     // 게시글 삭제

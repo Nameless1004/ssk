@@ -10,9 +10,12 @@ import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,15 +28,15 @@ public class BoardService {
     private final FriendshipService friendshipService;
 
     @Transactional
-    public BoardResponseDto saveBoard(BoardRequestDto boardRequestDto) {
+    public BoardResponseDto saveBoard(User user, String user_name, BoardRequestDto boardRequestDto) {
+
         Board newBoard = new Board();
-        newBoard.setUser_name(boardRequestDto.getUser_name());
         newBoard.setBoard_title(boardRequestDto.getBoard_title());
         newBoard.setBoard_contents(boardRequestDto.getBoard_contents());
 
         Board saveBoard = boardRepository.save(newBoard);
 
-        return new BoardResponseDto(saveBoard);
+        return new BoardResponseDto(saveBoard, user, user_name);
     }
 
     public List<BoardGetTitleResponseDto> getAllBoard() {
@@ -48,14 +51,14 @@ public class BoardService {
         return dtoList;
     }
 
-    public BoardResponseDto getDetailBoard(Long boardId) {
+    public BoardResponseDto getDetailBoard(Long boardId, User user, String user_name) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
             // Notfoundexception 로 바꿔주기, 일단 냅두기
-        return new BoardResponseDto(board);
+        return new BoardResponseDto(board, user, user_name);
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(User user, Long boardId, BoardRequestDto boardRequestDto) {
+    public BoardResponseDto updateBoard(User user, String user_name, Long boardId, BoardRequestDto boardRequestDto) {
         Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
         // 현재 로그인한 유저와 작성한 유저가 다른 경우
@@ -69,7 +72,7 @@ public class BoardService {
         board.setBoard_contents(boardRequestDto.getBoard_contents());
 
         Board updatedBoard = boardRepository.save(board);
-        return new BoardResponseDto (updatedBoard);
+        return new BoardResponseDto (updatedBoard, user, user_name);
     }
 
     @Transactional
