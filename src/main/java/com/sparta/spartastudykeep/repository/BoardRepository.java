@@ -9,5 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findAllByUserIdIn(List<Long> userId, Pageable pageable);
+
     List<Board> findAllByUserIdIn(List<Long> userId);
 }

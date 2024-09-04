@@ -32,7 +32,8 @@ public class WebSecurityConfig {
 
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
+        throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -63,12 +64,16 @@ public class WebSecurityConfig {
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
             authorizeHttpRequests
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
-                .requestMatchers("/api/signup", "/", "/api/login").permitAll()
-                .requestMatchers("/api/reissue").permitAll()
-                .anyRequest().authenticated() // 그 외 모든 요청 인증처리
+                .requestMatchers(PathRequest.toStaticResources()
+                    .atCommonLocations())
+                .permitAll() // resources 접근 허용 설정
+                .requestMatchers("/api/signup", "/", "/api/login")
+                .permitAll()
+                .requestMatchers("/api/reissue")
+                .permitAll()
+                .anyRequest()
+                .authenticated() // 그 외 모든 요청 인증처리
         );
-
 
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), JwtAuthenticationFilter.class);
@@ -78,7 +83,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

@@ -10,8 +10,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
 
     void deleteAllByUser(User user);
+
     void deleteByUserIdAndBoardId(Long userId, Long boardId);
+
     void deleteAllByUserAndBoard(User user, Board board);
+
     boolean existsByUser(User user);
+
     Page<Bookmark> findAllByUser(User user, Pageable pageable);
 }

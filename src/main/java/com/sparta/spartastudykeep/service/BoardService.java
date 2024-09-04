@@ -2,7 +2,6 @@ package com.sparta.spartastudykeep.service;
 
 import com.sparta.spartastudykeep.common.exception.InvalidIdException;
 import com.sparta.spartastudykeep.common.exception.UnAuthorizedAccessException;
-import com.sparta.spartastudykeep.dto.BoardGetTitleResponseDto;
 import com.sparta.spartastudykeep.dto.BoardRequestDto;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
 import com.sparta.spartastudykeep.dto.FriendResponseDto;
@@ -11,15 +10,11 @@ import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import com.sparta.spartastudykeep.repository.BookmarkRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,18 +54,23 @@ public class BoardService {
 //    }
 
     public BoardResponseDto getDetailBoard(Long boardId, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
-            // Notfoundexception 로 바꿔주기, 일단 냅두기
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        // Notfoundexception 로 바꿔주기, 일단 냅두기
         return new BoardResponseDto(board, user);
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(User user, String user_name, Long boardId, BoardRequestDto boardRequestDto) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+    public BoardResponseDto updateBoard(User user, String user_name, Long boardId,
+        BoardRequestDto boardRequestDto) {
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
         // 현재 로그인한 유저와 작성한 유저가 다른 경우
         // 편하신대로 하시면 됩니다.
-        if(!user.getId().equals(board.getUser().getId())){
+        if (!user.getId()
+            .equals(board.getUser()
+                .getId())) {
             throw new UnAuthorizedAccessException();
         }
 
@@ -79,15 +79,18 @@ public class BoardService {
         board.setBoard_contents(boardRequestDto.getBoard_contents());
 
         Board updatedBoard = boardRepository.save(board);
-        return new BoardResponseDto (updatedBoard, user);
+        return new BoardResponseDto(updatedBoard, user);
     }
 
     @Transactional
     public void deleteBoard(User user, Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = boardRepository.findById(boardId)
+            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
         //
-        if(!user.getId().equals(board.getUser().getId())){
+        if (!user.getId()
+            .equals(board.getUser()
+                .getId())) {
             throw new UnAuthorizedAccessException();
         }
 
@@ -99,11 +102,12 @@ public class BoardService {
     public Page<NewsfeedDto> getNewsfeed(User user, Pageable pageable) {
 
         List<FriendResponseDto> friends = friendshipService.getFriendAll(user);
-        List<Long> ids = friends.stream().map(FriendResponseDto::getUserId).collect(Collectors.toList());
+        List<Long> ids = friends.stream()
+            .map(FriendResponseDto::getUserId)
+            .collect(Collectors.toList());
         ids.add(user.getId());
 
         Page<Board> newsfeed = boardRepository.findAllByUserIdIn(ids, pageable);
-
 
         // 친구들이 작성한 글 목록 저장함
         return newsfeed.map(NewsfeedDto::new);

@@ -101,7 +101,7 @@ public class JwtUtil {
         return getDecodeToken(header);
     }
 
-    public String getDecodeToken(String token){
+    public String getDecodeToken(String token) {
         return URLDecoder.decode(token, StandardCharsets.UTF_8);
     }
 
@@ -186,7 +186,9 @@ public class JwtUtil {
     }
 
     public String getCategory(String token) {
-        return getJwtParser().parseSignedClaims(token).getPayload().get("category", String.class);
+        return getJwtParser().parseSignedClaims(token)
+            .getPayload()
+            .get("category", String.class);
     }
 
     public void deleteCookie(HttpServletResponse response, String cookieName) {

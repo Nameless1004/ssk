@@ -15,6 +15,7 @@ public class TokenExampleController {
         User user = userDetails.getUser();
         System.out.println("user.getUsername() = " + user.getUsername());
         System.out.println("user.getEmail() = " + user.getEmail());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 }

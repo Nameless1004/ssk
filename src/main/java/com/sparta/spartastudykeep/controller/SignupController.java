@@ -18,9 +18,11 @@ public class SignupController {
     private final UserService userService;
 
     @PostMapping("/api/signup")
-    public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequestDto requestDto, HttpServletResponse res){
+    public ResponseEntity<Void> signup(@Valid @RequestBody SignupRequestDto requestDto,
+        HttpServletResponse res) {
         userService.createUser(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .build();
     }
 
 }

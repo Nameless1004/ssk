@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 public class FriendshipReceiveDto {
+
     private Long friendshipId;
     private Long requesterId;
     private Long receiverId;

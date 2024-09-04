@@ -17,54 +17,68 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 class BookmarkServiceTest {
 
-    @Autowired BookmarkService bs;
-    @Autowired BookmarkRepository bookr;
-    @Autowired UserRepository ur;
+    @Autowired
+    BookmarkService bs;
+    @Autowired
+    BookmarkRepository bookr;
+    @Autowired
+    UserRepository ur;
 
     @Test
-    public void 북마크모두조회(){
+    public void 북마크모두조회() {
         User user = ur.findById(2L)
             .get();
 
-        Page<Bookmark> bookmarks = bookr.findAllByUser(user, PageRequest.of(0, 10, Direction.ASC, "createdAt"));
+        Page<Bookmark> bookmarks = bookr.findAllByUser(user,
+            PageRequest.of(0, 10, Direction.ASC, "createdAt"));
         for (Bookmark bookmark : bookmarks) {
-            System.out.println(bookmark.getBoard().getBoard_title());
+            System.out.println(bookmark.getBoard()
+                .getBoard_title());
         }
     }
 
     @Test
-    public void 북마크삭제(){
+    public void 북마크삭제() {
         User user = ur.findById(2L)
             .get();
 
-
-        Page<Bookmark> bookmarks = bookr.findAllByUser(user, PageRequest.of(0, 100, Direction.ASC, "createdAt"));
-        long cnt = bookmarks.getContent().size();
-        bookr.deleteById(bookmarks.getContent().get(0).getId());
+        Page<Bookmark> bookmarks = bookr.findAllByUser(user,
+            PageRequest.of(0, 100, Direction.ASC, "createdAt"));
+        long cnt = bookmarks.getContent()
+            .size();
+        bookr.deleteById(bookmarks.getContent()
+            .get(0)
+            .getId());
         long afterCnt = bookr.count();
-        Assertions.assertThat(afterCnt).isEqualTo(cnt - 1);
+        Assertions.assertThat(afterCnt)
+            .isEqualTo(cnt - 1);
     }
 
     @Test
-    public void 북마크있는지검사(){
+    public void 북마크있는지검사() {
         // 북마크 존재하는 유저
-        User user = ur.findById(2L).get();
+        User user = ur.findById(2L)
+            .get();
 
         // 북마크 없는 유저
-        User user2 = ur.findById(3L).get();
+        User user2 = ur.findById(3L)
+            .get();
 
         boolean a = bookr.existsByUser(user);
         boolean b = bookr.existsByUser(user2);
-        Assertions.assertThat(a).isTrue();
-        Assertions.assertThat(b).isFalse();
+        Assertions.assertThat(a)
+            .isTrue();
+        Assertions.assertThat(b)
+            .isFalse();
     }
 
     @Test
-    public void 북마크모두삭제(){
+    public void 북마크모두삭제() {
         User user = ur.findById(2L)
             .get();
         bookr.deleteAllByUser(user);
         long count = bookr.count();
-        Assertions.assertThat(count).isEqualTo(0);
+        Assertions.assertThat(count)
+            .isEqualTo(0);
     }
 }

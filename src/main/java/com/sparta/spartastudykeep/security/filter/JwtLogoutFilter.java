@@ -29,10 +29,12 @@ public class JwtLogoutFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
         FilterChain filterChain) throws IOException, ServletException {
-        doFilter((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse, filterChain);
+        doFilter((HttpServletRequest) servletRequest, (HttpServletResponse) servletResponse,
+            filterChain);
     }
 
-    private void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+    private void doFilter(HttpServletRequest request, HttpServletResponse response,
+        FilterChain filterChain) throws IOException, ServletException {
         String requestURI = request.getRequestURI();
 
         // 모든 요청이 들어오기 때문에 logout 요청인지 확인
@@ -43,17 +45,17 @@ public class JwtLogoutFilter extends GenericFilterBean {
         }
 
         String requestMethod = request.getMethod();
-        if(!requestMethod.equals("POST")){
+        if (!requestMethod.equals("POST")) {
             filterChain.doFilter(request, response);
             return;
         }
         // ----------------------------------------
 
-
         // 리프레쉬 토큰 쿠키에서 가져오기
         String refreshToken = null;
-        for(Cookie cookie : request.getCookies()){
-            if(cookie.getName().equals(TokenType.REFRESH.name())){
+        for (Cookie cookie : request.getCookies()) {
+            if (cookie.getName()
+                .equals(TokenType.REFRESH.name())) {
                 refreshToken = cookie.getValue();
                 break;
             }
@@ -63,13 +65,13 @@ public class JwtLogoutFilter extends GenericFilterBean {
         refreshToken = jwtUtil.substringToken(refreshToken);
 
         // 토큰 없으면
-        if(refreshToken == null){
+        if (refreshToken == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
         // 토큰 만료 검사
-        try{
+        try {
             jwtUtil.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -78,7 +80,7 @@ public class JwtLogoutFilter extends GenericFilterBean {
 
         // 토큰이 REFRESH인지 검사
         String category = jwtUtil.getCategory(refreshToken);
-        if(!category.equals(TokenType.REFRESH.name())){
+        if (!category.equals(TokenType.REFRESH.name())) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
