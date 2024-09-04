@@ -26,6 +26,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final JwtUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+
     public JwtAuthenticationFilter(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
         this.jwtUtil = jwtUtil;
         this.refreshRepository = refreshRepository;
@@ -67,8 +68,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRole role = userDetails.getUser()
             .getRole();
 
-        String accessToken = jwtUtil.createToken(TokenType.ACCESS, userEmail , role);
-        String refreshToken = jwtUtil.createToken(TokenType.REFRESH, userEmail , role);
+        String accessToken = jwtUtil.createToken(TokenType.ACCESS, userEmail, role);
+        String refreshToken = jwtUtil.createToken(TokenType.REFRESH, userEmail, role);
 
         // Refresh 레포지토리에 저장
         // 새로 발급한 토큰에 prefix를 제거 해준 후 저장
@@ -90,6 +91,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     /**
      * Encode가 안된 토큰을 넣어줘야합니다.
+     *
      * @param userEmail
      * @param refreshToken
      */

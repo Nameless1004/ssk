@@ -1,22 +1,16 @@
 package com.sparta.spartastudykeep.friendship.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.sparta.spartastudykeep.common.enums.FriendShipStatus;
 import com.sparta.spartastudykeep.common.enums.UserRole;
 import com.sparta.spartastudykeep.dto.FriendRequestDto;
-import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.Friendship;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
 import com.sparta.spartastudykeep.repository.FriendShipRepository;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import com.sparta.spartastudykeep.service.FriendshipService;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -64,13 +58,16 @@ class FriendshipServiceTest {
             save2);
 
         // 친구 신청을 했으면 WAITING 상태여야 함
-        Assertions.assertThat(byUserIdAndFriendId).isPresent();
-        Assertions.assertThat(byUserIdAndFriendId.get().getStatus()).isEqualTo(FriendShipStatus.WAITING);
+        Assertions.assertThat(byUserIdAndFriendId)
+            .isPresent();
+        Assertions.assertThat(byUserIdAndFriendId.get()
+                .getStatus())
+            .isEqualTo(FriendShipStatus.WAITING);
     }
 
     @Test
     @Rollback(false)
-    public void 친구등록 () throws Exception {
+    public void 친구등록() throws Exception {
         String p = pe.encode("asdasd!@#asA");
         User user1 = new User("test1", "adsfa@.com", p, "asdf", true, UserRole.USER);
         User user2 = new User("test2", "adsfa1@.com", p, "asdf", true, UserRole.USER);
@@ -89,20 +86,25 @@ class FriendshipServiceTest {
         Optional<Friendship> byUserIdAndFriendId = fr.findByRequesterAndReceiver(save2,
             save1);
 
-
         Optional<Friendship> byUserIdAndFriendId1 = fr.findByRequesterAndReceiver(save1,
             save2);
 
         // 요청을 수락했으면 서로 연결되어있어야함
-        Assertions.assertThat(byUserIdAndFriendId).isPresent();
-        Assertions.assertThat(byUserIdAndFriendId.get().getStatus()).isEqualTo(FriendShipStatus.ACCEPTED);
+        Assertions.assertThat(byUserIdAndFriendId)
+            .isPresent();
+        Assertions.assertThat(byUserIdAndFriendId.get()
+                .getStatus())
+            .isEqualTo(FriendShipStatus.ACCEPTED);
 
-        Assertions.assertThat(byUserIdAndFriendId1).isPresent();
-        Assertions.assertThat(byUserIdAndFriendId1.get().getStatus()).isEqualTo(FriendShipStatus.ACCEPTED);
+        Assertions.assertThat(byUserIdAndFriendId1)
+            .isPresent();
+        Assertions.assertThat(byUserIdAndFriendId1.get()
+                .getStatus())
+            .isEqualTo(FriendShipStatus.ACCEPTED);
     }
 
     @Test
-    public void t(){
+    public void t() {
         User user = ur.findById(1L)
             .get();
         User user2 = ur.findById(2L)
@@ -120,11 +122,14 @@ class FriendshipServiceTest {
                 .equals(user))
             .findFirst();
         // 요청을 수락했으면 서로 친구목록에 있어야함
-        Assertions.assertThat(first).isPresent();
-        Assertions.assertThat(second).isPresent();
+        Assertions.assertThat(first)
+            .isPresent();
+        Assertions.assertThat(second)
+            .isPresent();
     }
+
     @Test
-    public void 친구신청거부 () throws Exception {
+    public void 친구신청거부() throws Exception {
         String p = pe.encode("asdasd!@#asA");
         User user1 = new User("test1", "adsfa@.com", p, "asdf", true, UserRole.USER);
         User user2 = new User("test2", "adsfa1@.com", p, "asdf", true, UserRole.USER);
@@ -145,11 +150,12 @@ class FriendshipServiceTest {
             save2);
 
         // friendship 테이블에 save1이 save2에게 친구 요청 기록이 있으면 안됨
-        Assertions.assertThat(byUserIdAndFriendId).isEmpty();
+        Assertions.assertThat(byUserIdAndFriendId)
+            .isEmpty();
     }
 
     @Test
-    public void 친구신청거부2 () throws Exception {
+    public void 친구신청거부2() throws Exception {
         // given
         String p = pe.encode("asdasd!@#asA");
         User user1 = new User("test1", "adsfa@.com", p, "asdf", true, UserRole.USER);
@@ -172,12 +178,14 @@ class FriendshipServiceTest {
 
         // 거부를 안했으므로
         // friendship 테이블에 save1이 save2에게 친구 요청 기록이 있어야 됨
-        Assertions.assertThat(byUserIdAndFriendId).isPresent();
+        Assertions.assertThat(byUserIdAndFriendId)
+            .isPresent();
     }
 
     @Test
-    public void 친구전체삭제() throws Exception{
-        User user = userRepository.findById(1L).get();
+    public void 친구전체삭제() throws Exception {
+        User user = userRepository.findById(1L)
+            .get();
         friendshipService.removeAllFriendship(user);
     }
 

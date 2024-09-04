@@ -1,7 +1,6 @@
 package com.sparta.spartastudykeep.entity;
 
 import com.sparta.spartastudykeep.common.enums.FriendShipStatus;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,7 +38,7 @@ public class Friendship {
         status = FriendShipStatus.WAITING;
     }
 
-    public void accept(){
+    public void accept() {
         status = FriendShipStatus.ACCEPTED;
     }
 

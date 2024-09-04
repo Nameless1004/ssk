@@ -1,5 +1,6 @@
 package com.sparta.spartastudykeep.security;
 
+import com.sparta.spartastudykeep.common.exception.UserEmailNotFoundException;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userEmail) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserEmailNotFoundException(userEmail));
+        User user = userRepository.findByEmail(userEmail)
+            .orElseThrow(() -> new UserEmailNotFoundException(userEmail));
         return new UserDetailsImpl(user);
     }
 }

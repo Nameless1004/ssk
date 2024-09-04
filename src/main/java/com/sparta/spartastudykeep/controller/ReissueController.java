@@ -3,9 +3,7 @@ package com.sparta.spartastudykeep.controller;
 import com.sparta.spartastudykeep.common.enums.TokenType;
 import com.sparta.spartastudykeep.common.enums.UserRole;
 import com.sparta.spartastudykeep.entity.RefreshEntity;
-import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.RefreshRepository;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import com.sparta.spartastudykeep.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
@@ -14,8 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,45 +30,52 @@ public class ReissueController {
         String refreshToken = null;
         Cookie oldCookie = null;
         for (Cookie cookie : request.getCookies()) {
-            if (cookie.getName().equals(TokenType.REFRESH.name())) {
-                oldCookie= cookie;
+            if (cookie.getName()
+                .equals(TokenType.REFRESH.name())) {
+                oldCookie = cookie;
                 refreshToken = cookie.getValue();
                 break;
             }
         }
 
-        if(refreshToken == null) {
-            return ResponseEntity.badRequest().body("refresh token null");
+        if (refreshToken == null) {
+            return ResponseEntity.badRequest()
+                .body("refresh token null");
         }
 
         // decode 해준 후 prefix 제거
         refreshToken = jwtUtil.substringToken(jwtUtil.getDecodeToken(refreshToken));
 
         // Refresh token 만료 검증
-        try{
+        try {
             jwtUtil.isExpired(refreshToken);
         } catch (ExpiredJwtException e) {
-            return ResponseEntity.badRequest().body("refresh token expired");
+            return ResponseEntity.badRequest()
+                .body("refresh token expired");
         }
 
         // 토큰이 refresh인지 체크
         String categry = jwtUtil.getCategory(refreshToken);
         if (!categry.equals(TokenType.REFRESH.name())) {
-            return ResponseEntity.badRequest().body("refresh token invalid");
+            return ResponseEntity.badRequest()
+                .body("refresh token invalid");
         }
 
         // DB에 저장되어 있는지 확인
         boolean isExist = refreshRepository.existsByRefresh(refreshToken);
         if (!isExist) {
-            return ResponseEntity.badRequest().body("refresh token invalid");
+            return ResponseEntity.badRequest()
+                .body("refresh token invalid");
         }
 
         String userEmail = jwtUtil.getUserEmail(refreshToken);
         String role = jwtUtil.getRole(refreshToken);
 
         // 새 토큰 발급
-        String newAccessToken = jwtUtil.createToken(TokenType.ACCESS, userEmail, UserRole.valueOf(role));
-        String newRefreshToken = jwtUtil.createToken(TokenType.REFRESH, userEmail, UserRole.valueOf(role));
+        String newAccessToken = jwtUtil.createToken(TokenType.ACCESS, userEmail,
+            UserRole.valueOf(role));
+        String newRefreshToken = jwtUtil.createToken(TokenType.REFRESH, userEmail,
+            UserRole.valueOf(role));
 
         // Refresh 토큰 저장소에 기존의 Refresh 토큰 삭제 후 새 Refresh 토큰 저장
         refreshRepository.deleteByRefresh(refreshToken);
@@ -81,13 +84,15 @@ public class ReissueController {
         addRefreshEntity(userEmail, jwtUtil.substringToken(newRefreshToken));
 
         oldCookie.setMaxAge(0);
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
-        response.addCookie(jwtUtil.createCookie(TokenType.REFRESH, newRefreshToken));
-        return ResponseEntity.ok().build();
+        jwtUtil.addTokenToHeader(response, newAccessToken);
+        jwtUtil.addCookie(response, TokenType.REFRESH, newRefreshToken);
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
      * 리프레쉬 토큰 테이블에 추가
+     *
      * @param userEmail
      * @param refreshToken
      */

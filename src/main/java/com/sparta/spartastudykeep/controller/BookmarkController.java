@@ -24,27 +24,35 @@ public class BookmarkController {
     private final BookmarkService bookmarkService;
 
     @PostMapping("/api/boards/{id}/bookmarks")
-    private ResponseEntity<Void> bookmarking(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){
+    private ResponseEntity<Void> bookmarking(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable("id") Long id) {
         bookmarkService.addBookmark(userDetails.getUser(), id);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+            .build();
     }
 
     @DeleteMapping("/api/boards/{id}/bookmarks")
-    private ResponseEntity<Void> deleteBookmark(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){
+    private ResponseEntity<Void> deleteBookmark(
+        @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id) {
         bookmarkService.removeBookmark(userDetails.getUser(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     @DeleteMapping("/api/bookmarks")
-    private ResponseEntity<Void> deleteAllBookmarks(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    private ResponseEntity<Void> deleteAllBookmarks(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         bookmarkService.removeAllBookmark(userDetails.getUser());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     @GetMapping("/api/bookmarks")
-    private ResponseEntity<Page<BoardResponseDto>> getBookmarkBoards(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    private ResponseEntity<Page<BoardResponseDto>> getBookmarkBoards(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<BoardResponseDto> page = bookmarkService.getAllBookmarkedBoards(userDetails.getUser(), pageable);
+        Page<BoardResponseDto> page = bookmarkService.getAllBookmarkedBoards(userDetails.getUser(),
+            pageable);
         return ResponseEntity.ok(page);
     }
 }

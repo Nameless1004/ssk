@@ -1,15 +1,13 @@
 package com.sparta.spartastudykeep.dto;
 
 import com.sparta.spartastudykeep.entity.User;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 public class FriendResponseDto {
+
     private Long userId;
     private String userName;
 

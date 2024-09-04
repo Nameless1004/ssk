@@ -26,76 +26,97 @@ public class FriendshipController {
 
     /**
      * 다른 유저에게 친구요청
+     *
      * @param userDetails 현재 로그인 유저
-     * @param requestDto receiver 아이디 필요
+     * @param requestDto  receiver 아이디 필요
      * @return
      */
     @PostMapping("/api/friend-requests")
-    public ResponseEntity<Void> addFriend(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody FriendRequestDto requestDto){
+    public ResponseEntity<Void> addFriend(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestBody FriendRequestDto requestDto) {
         friendshipService.requestFriendship(userDetails.getUser(), requestDto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
      * 친구요청 수락
+     *
      * @param userDetails 현재 로그인 유저
      * @param requesterId 요청한 유저 아이디
      * @return
      */
     @PutMapping("/api/friend-requests/{requesterId}/accept")
-    public ResponseEntity<Void> acceptFriendship(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("requesterId") Long requesterId){
+    public ResponseEntity<Void> acceptFriendship(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable("requesterId") Long requesterId) {
         friendshipService.acceptFriendShip(userDetails.getUser(), requesterId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
      * 친구요청 거절
+     *
      * @param userDetails 현재 로그인 유저
      * @param requesterId 요청한 유저 아이디
      */
     @DeleteMapping("/api/friend-requests/{requesterId}/reject")
-    public ResponseEntity<Void> rejectFriendRequest(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("requesterId") Long requesterId){
+    public ResponseEntity<Void> rejectFriendRequest(
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable("requesterId") Long requesterId) {
         friendshipService.rejectFriendshipRequest(userDetails.getUser(), requesterId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
      * 친구요청 목록
+     *
      * @param userDetails 현재 로그인 유저
      */
     @GetMapping("/api/friend-requests")
-    public ResponseEntity<List<FriendshipReceiveDto>> getRecieveList(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<List<FriendshipReceiveDto>> getRecieveList(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(friendshipService.getRecieveList(userDetails.getUser()));
     }
 
     /**
      * 친구목록 가져오기
+     *
      * @param userDetails 현재 로그인 유저
      */
     @GetMapping("/api/friends")
-    public ResponseEntity<List<FriendResponseDto>> getFriends(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<List<FriendResponseDto>> getFriends(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok(friendshipService.getFriendAll(userDetails.getUser()));
     }
 
     /**
      * 친구 삭제
+     *
      * @param userDetails 현재 로그인 유저
-     * @param id 삭제할 친구(유저) 아이디
+     * @param id          삭제할 친구(유저) 아이디
      */
     @DeleteMapping("/api/friends/{id}")
-    public ResponseEntity<Void> removeFriend(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable("id") Long id){
+    public ResponseEntity<Void> removeFriend(@AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable("id") Long id) {
         friendshipService.removeFriendship(userDetails.getUser(), id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
     /**
      * 모든 친구 요청 및 친구 삭제
+     *
      * @param userDetails
      */
     @DeleteMapping("/api/friends")
-    public ResponseEntity<Void> removeAllFriend(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<Void> removeAllFriend(
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         friendshipService.removeAllFriendship(userDetails.getUser());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+            .build();
     }
 
 

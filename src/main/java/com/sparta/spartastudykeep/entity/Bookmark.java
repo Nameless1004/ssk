@@ -1,6 +1,5 @@
 package com.sparta.spartastudykeep.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -15,22 +14,23 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
-@Table(name ="bookmarks")
+@Table(name = "bookmarks")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Bookmark extends Timestamped{
+public class Bookmark extends Timestamped {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne(fetch =  FetchType.LAZY)
-    @JoinColumn(name="board_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
     private Board board;
 
-    public Bookmark (User user, Board board) {
+    public Bookmark(User user, Board board) {
         this.user = user;
         this.board = board;
     }

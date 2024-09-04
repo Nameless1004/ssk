@@ -1,14 +1,14 @@
 package com.sparta.spartastudykeep.dto;
 
 import com.sparta.spartastudykeep.entity.User;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class UserResponseDto {
+
     private long id;
     private String username;
     private String password;
@@ -22,7 +22,8 @@ public class UserResponseDto {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();
-        this.role = user.getRole().getAuthority();
+        this.role = user.getRole()
+            .getAuthority();
         this.description = user.getDescription();
         this.enabled = user.getEnabled();
         this.createdAt = user.getCreatedAt();

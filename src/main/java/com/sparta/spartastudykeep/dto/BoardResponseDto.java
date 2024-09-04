@@ -2,11 +2,9 @@ package com.sparta.spartastudykeep.dto;
 
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.User;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor

@@ -1,5 +1,7 @@
 package com.sparta.spartastudykeep.service;
 
+import com.sparta.spartastudykeep.common.exception.InvalidIdException;
+import com.sparta.spartastudykeep.common.exception.NoSuchResourceException;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.Bookmark;
@@ -16,12 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class BookmarkService {
+
     private final BookmarkRepository bookmarkRepository;
     private final BoardRepository boardRepository;
 
     /**
      * 유저의 북마크에 보드를 추가합니다.
-     * @param user 현재 로그인 유저
+     *
+     * @param user    현재 로그인 유저
      * @param boardId 추가할 보드 아이디
      */
     public void addBookmark(User user, Long boardId) {
@@ -33,7 +37,8 @@ public class BookmarkService {
 
     /**
      * 유저의 북마크에서 해당 보드를 제거합니다.
-     * @param user 현재 로그인 유저
+     *
+     * @param user    현재 로그인 유저
      * @param boardId 제거할 보드 아이디
      */
     public void removeBookmark(User user, Long boardId) {
@@ -42,7 +47,8 @@ public class BookmarkService {
 
     /**
      * 유저가 북마크에 저장한 글들을 페이징 해서 가져옵니다.
-     * @param user 현재 로그인 유저
+     *
+     * @param user     현재 로그인 유저
      * @param pageable 페이징
      * @return
      */
@@ -53,18 +59,19 @@ public class BookmarkService {
 
     /**
      * 유저가 저장한 모든 북마크를 삭제합니다.
+     *
      * @param user 현재 로그인 유저
      */
     public void removeAllBookmark(User user) {
-        if(!bookmarkRepository.existsByUser(user)) {
-            throw new IllegalArgumentException("삭제할 북마크가 없습니다.");
+        if (!bookmarkRepository.existsByUser(user)) {
+            throw new NoSuchResourceException();
         }
         bookmarkRepository.deleteAllByUser(user);
     }
 
     private Board getBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드 아이디입니다."));
+            .orElseThrow(InvalidIdException::new);
         return board;
     }
 }

@@ -1,9 +1,6 @@
 package com.sparta.spartastudykeep.security.filter;
 
 import com.sparta.spartastudykeep.common.enums.TokenType;
-import com.sparta.spartastudykeep.common.enums.UserRole;
-import com.sparta.spartastudykeep.entity.User;
-import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import com.sparta.spartastudykeep.security.UserDetailsServiceImpl;
 import com.sparta.spartastudykeep.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -39,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
         // 헤더 검증
         String accessToken = jwtUtil.getAccessTokenFromRequestHeader(req);
-        if(accessToken == null) {
+        if (accessToken == null) {
             // 회원가입 안돼있을 때 넘겨줌
             filterChain.doFilter(req, res);
             return;
@@ -49,9 +46,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         log.info(accessToken);
 
         // 토큰 만료 검증
-        try{
+        try {
             jwtUtil.isExpired(accessToken);
-        } catch(ExpiredJwtException e) {
+        } catch (ExpiredJwtException e) {
             // response body
             PrintWriter writer = res.getWriter();
             writer.println("access token expired");

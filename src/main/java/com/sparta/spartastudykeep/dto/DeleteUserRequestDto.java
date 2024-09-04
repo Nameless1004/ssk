@@ -6,5 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class DeleteUserRequestDto {
+
     private String password;
 }
