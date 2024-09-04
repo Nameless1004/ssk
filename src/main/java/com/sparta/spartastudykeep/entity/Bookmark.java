@@ -32,7 +32,6 @@ public class Bookmark extends Timestamped{
 
     public Bookmark (User user, Board board) {
         this.user = user;
-        this.user.getBookmarks().add(this);
         this.board = board;
     }
 }
