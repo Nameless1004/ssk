@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class BoardController {
     private final BoardService boardService;
 
     // 게시글 작성
+    @Transactional
     @PostMapping
     public ResponseEntity<BoardResponseDto> saveBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto boardRequestDto){
         return ResponseEntity.ok(boardService.saveBoard(userDetails.getUser(), boardRequestDto));
