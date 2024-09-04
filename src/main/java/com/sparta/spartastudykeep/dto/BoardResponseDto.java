@@ -18,14 +18,14 @@ public class BoardResponseDto {
     private final User user;
     private final String user_name;
 
-    public BoardResponseDto(Board board, User user, String user_name ) {
+    public BoardResponseDto(Board board, User user) {
         this.id = board.getId();
         this.board_title = board.getBoard_title();
         this.board_contents = board.getBoard_contents();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
         this.user = user;
-        this.user_name = board.getUser_name();
+        this.user_name = user.getUsername();
     }
 }
 

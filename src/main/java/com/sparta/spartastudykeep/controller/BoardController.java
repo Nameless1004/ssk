@@ -25,19 +25,19 @@ public class BoardController {
     // 게시글 작성
     @PostMapping
     public ResponseEntity<BoardResponseDto> saveBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody BoardRequestDto boardRequestDto){
-        return ResponseEntity.ok(boardService.saveBoard(userDetails.getUser(), userDetails.getUsername(), boardRequestDto));
+        return ResponseEntity.ok(boardService.saveBoard(userDetails.getUser(), boardRequestDto));
     }
 
-    // 게시글 제목 전체 조회
-    @GetMapping
-    public ResponseEntity<List<BoardGetTitleResponseDto>> getAllBoard(){
-        return ResponseEntity.ok(boardService.getAllBoard());
-    }
+//    // 게시글 제목 전체 조회
+//    @GetMapping
+//    public ResponseEntity<List<BoardGetTitleResponseDto>> getAllBoard(){
+//        return ResponseEntity.ok(boardService.getAllBoard());
+//    }
 
     // 게시글 단건 조회
     @GetMapping("/{boardId}")
     public ResponseEntity<BoardResponseDto> getDetailBoard(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId){
-        return ResponseEntity.ok(boardService.getDetailBoard(boardId, userDetails.getUser(), userDetails.getUsername()));
+        return ResponseEntity.ok(boardService.getDetailBoard(boardId, userDetails.getUser()));
     }
     
     // 게시글 수정

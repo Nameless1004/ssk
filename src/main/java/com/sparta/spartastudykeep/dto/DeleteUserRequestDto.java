@@ -5,10 +5,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class BoardRequestDto {
-
-
-    private String board_title;
-    private String board_contents;
+public class DeleteUserRequestDto {
+    private String password;
 }
-
