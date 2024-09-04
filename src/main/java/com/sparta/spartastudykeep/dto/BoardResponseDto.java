@@ -27,5 +27,15 @@ public class BoardResponseDto {
         this.userId = user.getId();
         this.user_name = user.getUsername();
     }
+
+    public BoardResponseDto(Board board) {
+        this.id = board.getId();
+        this.board_title = board.getBoard_title();
+        this.board_contents = board.getBoard_contents();
+        this.createdAt = board.getCreatedAt();
+        this.modifiedAt = board.getModifiedAt();
+        this.userId = board.getUser().getId();
+        this.user_name = board.getUser().getUsername();
+    }
 }
 

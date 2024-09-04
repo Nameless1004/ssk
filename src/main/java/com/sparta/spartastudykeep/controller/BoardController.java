@@ -3,13 +3,17 @@ package com.sparta.spartastudykeep.controller;
 import com.sparta.spartastudykeep.dto.BoardRequestDto;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
 import com.sparta.spartastudykeep.dto.NewsfeedDto;
+import com.sparta.spartastudykeep.external.EmbeddingService;
 import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import com.sparta.spartastudykeep.service.BoardService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/boards")
@@ -77,6 +82,15 @@ public class BoardController {
         @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<NewsfeedDto> newsfeed = boardService.getNewsfeed(userDetails.getUser(), pageable);
         return ResponseEntity.ok(newsfeed);
+    }
+
+    @GetMapping("/similar")
+    public  ResponseEntity<List<BoardResponseDto>> getSimilarBoard(@RequestParam(required = false) String search, @RequestParam(name = "limit", required = false, defaultValue = "10") Long limit){
+        if(search == null) {
+            return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(boardService.FindSimilarBoard(search, limit), HttpStatus.OK);
     }
 }
 
