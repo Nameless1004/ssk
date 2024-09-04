@@ -4,6 +4,7 @@ package com.sparta.spartastudykeep.controller;
 import com.sparta.spartastudykeep.dto.*;
 import com.sparta.spartastudykeep.security.UserDetailsImpl;
 import com.sparta.spartastudykeep.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,7 +47,7 @@ public class UserController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<UserResponseDto> updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PasswordRequestDto requestDto) {
+    public ResponseEntity<UserResponseDto> updatePassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PasswordRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.updatePassword(userDetails, requestDto));
     }
 
