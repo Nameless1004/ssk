@@ -1,5 +1,7 @@
 package com.sparta.spartastudykeep.service;
 
+import com.sparta.spartastudykeep.common.exception.InvalidIdException;
+import com.sparta.spartastudykeep.common.exception.UnAuthorizedAccessException;
 import com.sparta.spartastudykeep.dto.BoardGetTitleResponseDto;
 import com.sparta.spartastudykeep.dto.BoardRequestDto;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
@@ -8,6 +10,7 @@ import com.sparta.spartastudykeep.dto.NewsfeedDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.BoardRepository;
+import com.sparta.spartastudykeep.repository.BookmarkRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardService {
 
     private final BoardRepository boardRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final FriendshipService friendshipService;
 
     @Transactional
@@ -55,19 +59,19 @@ public class BoardService {
 //    }
 
     public BoardResponseDto getDetailBoard(Long boardId, User user) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
             // Notfoundexception 로 바꿔주기, 일단 냅두기
         return new BoardResponseDto(board, user);
     }
 
     @Transactional
     public BoardResponseDto updateBoard(User user, String user_name, Long boardId, BoardRequestDto boardRequestDto) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
         // 현재 로그인한 유저와 작성한 유저가 다른 경우
         // 편하신대로 하시면 됩니다.
         if(!user.getId().equals(board.getUser().getId())){
-            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+            throw new UnAuthorizedAccessException();
         }
 
         // 작성한 유저가 맞다.
@@ -80,12 +84,14 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(User user, Long boardId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NullPointerException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
 
         //
         if(!user.getId().equals(board.getUser().getId())){
-            throw new IllegalArgumentException("작성한 유저가 아닙니다.");
+            throw new UnAuthorizedAccessException();
         }
+
+        bookmarkRepository.deleteAllByUserAndBoard(user, board);
 
         boardRepository.deleteById(boardId);
     }

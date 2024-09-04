@@ -1,6 +1,7 @@
 package com.sparta.spartastudykeep.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class Board extends Timestamped {
     private String user_name;
     private String board_title;
     private String board_contents;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     public Board(User user, String un, String bt, String bc){
         this.user = user;

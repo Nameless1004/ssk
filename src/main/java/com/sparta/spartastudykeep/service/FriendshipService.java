@@ -1,6 +1,9 @@
 package com.sparta.spartastudykeep.service;
 
 import com.sparta.spartastudykeep.common.enums.FriendShipStatus;
+import com.sparta.spartastudykeep.common.exception.AlreadyAcceptedException;
+import com.sparta.spartastudykeep.common.exception.InvalidIdException;
+import com.sparta.spartastudykeep.common.exception.NoSuchResourceException;
 import com.sparta.spartastudykeep.dto.FriendRequestDto;
 import com.sparta.spartastudykeep.dto.FriendResponseDto;
 import com.sparta.spartastudykeep.dto.FriendshipReceiveDto;
@@ -44,7 +47,7 @@ public class FriendshipService {
             FriendShipStatus.ACCEPTED);
 
         if(isExists){
-            throw new IllegalArgumentException("이미 수락한 요청입니다.");
+            throw new AlreadyAcceptedException();
         }
 
         friendShipRepository.deleteByRequesterAndReceiver(requester, user);
@@ -59,10 +62,10 @@ public class FriendshipService {
         User requester = getUserOrElseThrow(requesterId);
 
         Friendship request = friendShipRepository.findByRequesterAndReceiver(requester, user)
-            .orElseThrow(() -> new IllegalArgumentException("수락할 요청이 없습니다."));
+            .orElseThrow(() -> new NoSuchResourceException("수락할 요청이 없습니다."));
 
         if(request.getStatus() == FriendShipStatus.ACCEPTED){
-            throw new IllegalArgumentException("이미 수락한 요청입니다.");
+            throw new AlreadyAcceptedException();
         }
 
         Friendship receive = new Friendship(user, requester);
@@ -124,7 +127,7 @@ public class FriendshipService {
 
     private User getUserOrElseThrow(Long id){
         return userRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아이디입니다."));
+            .orElseThrow(InvalidIdException::new);
     }
 
 }

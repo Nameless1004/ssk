@@ -1,5 +1,7 @@
 package com.sparta.spartastudykeep.service;
 
+import com.sparta.spartastudykeep.common.exception.InvalidIdException;
+import com.sparta.spartastudykeep.common.exception.NoSuchResourceException;
 import com.sparta.spartastudykeep.dto.BoardResponseDto;
 import com.sparta.spartastudykeep.entity.Board;
 import com.sparta.spartastudykeep.entity.Bookmark;
@@ -57,14 +59,14 @@ public class BookmarkService {
      */
     public void removeAllBookmark(User user) {
         if(!bookmarkRepository.existsByUser(user)) {
-            throw new IllegalArgumentException("삭제할 북마크가 없습니다.");
+            throw new NoSuchResourceException();
         }
         bookmarkRepository.deleteAllByUser(user);
     }
 
     private Board getBoard(Long boardId) {
         Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 보드 아이디입니다."));
+            .orElseThrow(InvalidIdException::new);
         return board;
     }
 }

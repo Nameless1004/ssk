@@ -81,8 +81,8 @@ public class ReissueController {
         addRefreshEntity(userEmail, jwtUtil.substringToken(newRefreshToken));
 
         oldCookie.setMaxAge(0);
-        response.setHeader(JwtUtil.AUTHORIZATION_HEADER, newAccessToken);
-        response.addCookie(jwtUtil.createCookie(TokenType.REFRESH, newRefreshToken));
+        jwtUtil.addTokenToHeader(response, newAccessToken);
+        jwtUtil.addCookie(response, TokenType.REFRESH, newRefreshToken);
         return ResponseEntity.ok().build();
     }
 
