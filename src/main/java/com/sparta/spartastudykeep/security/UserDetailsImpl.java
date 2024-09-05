@@ -1,7 +1,7 @@
 package com.sparta.spartastudykeep.security;
 
 import com.sparta.spartastudykeep.common.enums.UserRole;
-import com.sparta.spartastudykeep.entity.User;
+import com.sparta.spartastudykeep.user.entity.User;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;

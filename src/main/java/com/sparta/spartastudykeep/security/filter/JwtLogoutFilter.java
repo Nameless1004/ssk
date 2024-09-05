@@ -1,8 +1,8 @@
 package com.sparta.spartastudykeep.security.filter;
 
 import com.sparta.spartastudykeep.common.enums.TokenType;
-import com.sparta.spartastudykeep.repository.RefreshRepository;
-import com.sparta.spartastudykeep.util.JwtUtil;
+import com.sparta.spartastudykeep.reissue.repository.RefreshRepository;
+import com.sparta.spartastudykeep.security.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
