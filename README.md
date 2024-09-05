@@ -45,7 +45,7 @@
   * **안동환(팀원)**
     * 게시글 기능
 * **시연 영상**
-  * <a href="https://www.youtube.com/watch?v=GtFrYQ21SpE"><img src="https://img.shields.io/badge/youtube-FF0000?style=flat&logo=youtube&logoColor=white" /></a>
+  * <a href="https://www.youtube.com/watch?v=GtFrYQ21SpE" target='_blank'><img src="https://img.shields.io/badge/youtube-FF0000?style=flat&logo=youtube&logoColor=white" /></a>
    
 # ♻️ERD
 ![image](https://github.com/user-attachments/assets/a4214bd4-e9ad-47e4-8d92-1847abf8b1ca)
