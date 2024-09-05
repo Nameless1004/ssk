@@ -50,7 +50,7 @@ public class FriendshipService {
             throw new NoSuchResourceException("거절할 요청이 없습니다.");
         }
 
-        if (!friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user, FriendShipStatus.ACCEPTED)) {
+        if (friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user, FriendShipStatus.ACCEPTED)) {
             throw new AlreadyAcceptedException();
         }
 
