@@ -1,15 +1,15 @@
 package com.sparta.spartastudykeep;
 
 import com.sparta.spartastudykeep.common.enums.UserRole;
-import com.sparta.spartastudykeep.dto.FriendRequestDto;
-import com.sparta.spartastudykeep.dto.FriendResponseDto;
-import com.sparta.spartastudykeep.entity.Board;
-import com.sparta.spartastudykeep.entity.User;
-import com.sparta.spartastudykeep.repository.BoardRepository;
-import com.sparta.spartastudykeep.repository.FriendShipRepository;
-import com.sparta.spartastudykeep.repository.UserRepository;
-import com.sparta.spartastudykeep.service.BookmarkService;
-import com.sparta.spartastudykeep.service.FriendshipService;
+import com.sparta.spartastudykeep.friend.dto.FriendRequestDto;
+import com.sparta.spartastudykeep.friend.dto.FriendResponseDto;
+import com.sparta.spartastudykeep.board.entity.Board;
+import com.sparta.spartastudykeep.user.entity.User;
+import com.sparta.spartastudykeep.board.repository.BoardRepository;
+import com.sparta.spartastudykeep.friend.repository.FriendShipRepository;
+import com.sparta.spartastudykeep.user.repository.UserRepository;
+import com.sparta.spartastudykeep.bookmark.service.BookmarkService;
+import com.sparta.spartastudykeep.friend.service.FriendshipService;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -116,7 +116,7 @@ public class BoardServiceTest {
         List<Board> board = br.findAllByUserIdIn(ids);
         System.out.println(board.size());
         for (Board b : board) {
-            System.out.println(b.getBoard_title());
+            System.out.println(b.getBoardTitle());
         }
     }
 }

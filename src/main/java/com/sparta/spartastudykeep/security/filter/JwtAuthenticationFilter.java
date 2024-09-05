@@ -3,11 +3,11 @@ package com.sparta.spartastudykeep.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.spartastudykeep.common.enums.TokenType;
 import com.sparta.spartastudykeep.common.enums.UserRole;
-import com.sparta.spartastudykeep.dto.LoginRequestDto;
-import com.sparta.spartastudykeep.entity.RefreshEntity;
-import com.sparta.spartastudykeep.repository.RefreshRepository;
+import com.sparta.spartastudykeep.user.dto.LoginRequestDto;
+import com.sparta.spartastudykeep.reissue.entity.RefreshEntity;
+import com.sparta.spartastudykeep.reissue.repository.RefreshRepository;
 import com.sparta.spartastudykeep.security.UserDetailsImpl;
-import com.sparta.spartastudykeep.util.JwtUtil;
+import com.sparta.spartastudykeep.security.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -96,7 +96,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @param refreshToken
      */
     private void addRefreshEntity(String userEmail, String refreshToken) {
-        Long refreshTokenTime = jwtUtil.getRefreshTokenTime();
+        Long refreshTokenTime = TokenType.REFRESH.getLifeTime();
         Date date = new Date(System.currentTimeMillis() + refreshTokenTime);
 
         RefreshEntity refreshEntity = RefreshEntity.builder()

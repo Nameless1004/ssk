@@ -1,10 +1,10 @@
 package com.sparta.spartastudykeep.security;
 
-import com.sparta.spartastudykeep.repository.RefreshRepository;
+import com.sparta.spartastudykeep.reissue.repository.RefreshRepository;
 import com.sparta.spartastudykeep.security.filter.JwtAuthenticationFilter;
 import com.sparta.spartastudykeep.security.filter.JwtAuthorizationFilter;
 import com.sparta.spartastudykeep.security.filter.JwtLogoutFilter;
-import com.sparta.spartastudykeep.util.JwtUtil;
+import com.sparta.spartastudykeep.security.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;

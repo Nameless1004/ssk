@@ -1,9 +1,10 @@
 package com.sparta.spartastudykeep.service;
 
-import com.sparta.spartastudykeep.entity.Bookmark;
-import com.sparta.spartastudykeep.entity.User;
-import com.sparta.spartastudykeep.repository.BookmarkRepository;
-import com.sparta.spartastudykeep.repository.UserRepository;
+import com.sparta.spartastudykeep.bookmark.service.BookmarkService;
+import com.sparta.spartastudykeep.bookmark.entity.Bookmark;
+import com.sparta.spartastudykeep.user.entity.User;
+import com.sparta.spartastudykeep.bookmark.repository.BookmarkRepository;
+import com.sparta.spartastudykeep.user.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ class BookmarkServiceTest {
             PageRequest.of(0, 10, Direction.ASC, "createdAt"));
         for (Bookmark bookmark : bookmarks) {
             System.out.println(bookmark.getBoard()
-                .getBoard_title());
+                .getBoardTitle());
         }
     }
 
