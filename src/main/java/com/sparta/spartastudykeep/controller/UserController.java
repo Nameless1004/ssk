@@ -35,6 +35,7 @@ public class UserController {
 //        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDto);
 //    }
 
+    // 현재 로그인 중인 유저의 정보를 상세 조회 - 토큰 유효한지 빠르게 검증하기 위해 추가함
     @GetMapping("/me")
     public ResponseEntity<UserResponseDto> getMyProfile(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -42,6 +43,7 @@ public class UserController {
             .body(userService.getMyProfile(userDetails));
     }
 
+    // id를 파라미터로 입력 받아 유저의 정보를 상세 조회
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDto> getProfileById(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
@@ -49,12 +51,14 @@ public class UserController {
             .body(userService.getProfileById(userDetails, id));
     }
 
+    // 유저 목록 조회
     @GetMapping
     public ResponseEntity<List<UsersResponseDto>> getAllUsers() {
         return ResponseEntity.status(HttpStatus.OK)
             .body(userService.getAllUsers());
     }
 
+    // 유저 description 수정
     @PutMapping
     public ResponseEntity<UserResponseDto> updateUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -63,6 +67,7 @@ public class UserController {
             .body(userService.updateUser(userDetails, requestDto));
     }
 
+    // 유저 password 변경
     @PutMapping("/password")
     public ResponseEntity<UserResponseDto> updatePassword(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -71,6 +76,7 @@ public class UserController {
             .body(userService.updatePassword(userDetails, requestDto));
     }
 
+    // 유저 soft delete -> enable을 false로 변경하여 해당 유저의 상태를 비활성화
     @DeleteMapping
     public Long deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody DeleteUserRequestDto requestDto) {
