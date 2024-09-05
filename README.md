@@ -25,6 +25,15 @@
   <img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=flat&logo=SpringSecurity&logoColor=white" />
 </div>
 
+</p>
+  <p align="center">
+    <a href="https://https://github.com/Nameless1004/ssk/graphs/contributors">
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Nameless1004/ssk" />
+    </a>
+    <br />
+      <br />
+  </p>
+
 # 📕프로젝트 소개
 * **프로젝트 컨셉**
   * 뉴스피드 프로젝트
@@ -33,7 +42,7 @@
   * SSK(Sparta Study Keep)
 * **프로젝트 기간**
   * 2024.09.03 ~ 2024.09.06
-* **인원**
+* **인원** 
   * 3명
 * **담당자 / 담당 기능**
   * **정재호(팀장)**
