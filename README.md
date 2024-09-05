@@ -27,7 +27,7 @@
 
 </p>
   <p align="center">
-    <a href="https://https://github.com/Nameless1004/ssk/graphs/contributors">
+    <a href="https://github.com/Nameless1004/ssk/graphs/contributors">
       <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/Nameless1004/ssk" />
     </a>
     <br />
