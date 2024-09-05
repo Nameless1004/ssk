@@ -27,6 +27,12 @@ public class BoardService {
     private final BookmarkRepository bookmarkRepository;
     private final FriendshipService friendshipService;
 
+    private Board findBoardById(Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+    }
+
+    // Setter 사용 최소화 ( )
     @Transactional
     public BoardResponseDto saveBoard(User user, BoardRequestDto boardRequestDto) {
 
@@ -54,17 +60,16 @@ public class BoardService {
 //    }
 
     public BoardResponseDto getDetailBoard(Long boardId, User user) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = findBoardById(boardId);
         // Notfoundexception 로 바꿔주기, 일단 냅두기
         return new BoardResponseDto(board, user);
     }
 
     @Transactional
-    public BoardResponseDto updateBoard(User user, String user_name, Long boardId,
+    public BoardResponseDto updateBoard(User user, Long boardId,
+        // 메서드로 따로 빼두기
         BoardRequestDto boardRequestDto) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = findBoardById(boardId);
 
         // 현재 로그인한 유저와 작성한 유저가 다른 경우
         // 편하신대로 하시면 됩니다.
@@ -84,8 +89,7 @@ public class BoardService {
 
     @Transactional
     public void deleteBoard(User user, Long boardId) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+        Board board = findBoardById(boardId);
 
         //
         if (!user.getId()

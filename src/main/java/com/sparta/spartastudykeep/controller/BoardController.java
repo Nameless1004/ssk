@@ -30,7 +30,6 @@ public class BoardController {
     private final BoardService boardService;
 
     // 게시글 작성
-    @Transactional
     @PostMapping
     public ResponseEntity<BoardResponseDto> saveBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -57,7 +56,7 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long boardId,
         @RequestBody BoardRequestDto boardRequestDto) {
         return ResponseEntity.ok(
-            boardService.updateBoard(userDetails.getUser(), userDetails.getUsername(), boardId,
+            boardService.updateBoard(userDetails.getUser(), boardId,
                 boardRequestDto));
     }
 
