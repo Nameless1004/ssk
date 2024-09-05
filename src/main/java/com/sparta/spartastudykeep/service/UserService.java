@@ -47,7 +47,7 @@ public class UserService {
 //    }
 
     @Transactional(readOnly = true)
-    public UserResponseDto getUserById(UserDetailsImpl userDetails, Long id) {
+    public UserResponseDto getProfileById(UserDetailsImpl userDetails, Long id) {
         User user = userRepository.findById(id)
             .orElseThrow(
                 () -> new UserIdNotFoundException(id)
@@ -89,12 +89,7 @@ public class UserService {
 
     public Long deleteUser(UserDetailsImpl userDetails, DeleteUserRequestDto requestDto) {
         if (passwordEncoder.matches(requestDto.getPassword(), userDetails.getPassword())) {
-            User user = userRepository.findById(userDetails.getUser()
-                    .getId())
-                .orElseThrow(
-                    () -> new UserIdNotFoundException(userDetails.getUser()
-                        .getId())
-                );
+            User user = userDetails.getUser();
             user.setEnabled(false);
 
             // 유저 삭제 시 북마크, 친구 삭제
@@ -110,19 +105,18 @@ public class UserService {
 
     public UserResponseDto updatePassword(UserDetailsImpl userDetails,
         PasswordRequestDto requestDto) {
-        User user = userRepository.findById(userDetails.getUser()
-                .getId())
-            .orElseThrow(
-                () -> new UserIdNotFoundException(userDetails.getUser()
-                    .getId())
-            );
-        if (passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
-            User savedUser = userRepository.save(user);
-            return new UserResponseDto(savedUser);
-        } else {
+        User user = userDetails.getUser();
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Password doesn't match");
         }
+
+        if(passwordEncoder.matches(requestDto.getNewPassword(), user.getPassword())) {
+            throw new InvalidPasswordException("New password is already taken");
+        }
+
+        user.setPassword(passwordEncoder.encode(requestDto.getNewPassword()));
+        User savedUser = userRepository.save(user);
+        return new UserResponseDto(savedUser);
     }
 
     public UserResponseDto createUser(SignupRequestDto requestDto) {
@@ -150,7 +144,7 @@ public class UserService {
         return new UserResponseDto(newUser);
     }
 
-    public UserResponseDto getUser(UserDetailsImpl userDetails) {
+    public UserResponseDto getMyProfile(UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         return new UserResponseDto(user);
 
