@@ -42,6 +42,10 @@ public class BookmarkService {
      * @param boardId 제거할 보드 아이디
      */
     public void removeBookmark(User user, Long boardId) {
+        if(!boardRepository.existsById(boardId)) {
+            throw new InvalidIdException("해당 보드가 존재하지 않습니다.");
+        }
+
         bookmarkRepository.deleteByUserIdAndBoardId(user.getId(), boardId);
     }
 
@@ -63,15 +67,11 @@ public class BookmarkService {
      * @param user 현재 로그인 유저
      */
     public void removeAllBookmark(User user) {
-        if (!bookmarkRepository.existsByUser(user)) {
-            throw new NoSuchResourceException();
-        }
         bookmarkRepository.deleteAllByUser(user);
     }
 
     private Board getBoard(Long boardId) {
-        Board board = boardRepository.findById(boardId)
-            .orElseThrow(InvalidIdException::new);
-        return board;
+        return boardRepository.findById(boardId)
+            .orElseThrow(() -> new InvalidIdException("해당 보드가 존재하지 않습니다."));
     }
 }

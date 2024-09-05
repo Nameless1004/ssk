@@ -35,31 +35,18 @@ public class JwtUtil {
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer ";
 
-    @Value("${jwt.refresh.token.time}")
-    private Long REFRESH_TOKEN_TIME; // 60분
-    @Value("${jwt.access.token.time}")
-    private Long ACCESS_TOKEN_TIME;
-
-
     @Value("${jwt.secret.key}")
     private String secretKey;
 
     private SecretKey key;
 
-    public Long getAccessTokenTime() {
-        return ACCESS_TOKEN_TIME;
-    }
-
-    public Long getRefreshTokenTime() {
-        return REFRESH_TOKEN_TIME;
-    }
 
     public String createToken(TokenType tokenType, String userEmail, UserRole role) {
         Date now = new Date();
 
         if (tokenType == TokenType.ACCESS) {
             return BEARER_PREFIX + Jwts.builder()
-                .expiration(new Date(now.getTime() + ACCESS_TOKEN_TIME))
+                .expiration(new Date(now.getTime() + tokenType.getLifeTime()))
                 .claim("category", tokenType.name())
                 .claim("user_email", userEmail)
                 .claim(AUTHORIZATION_KEY, role.getAuthority())
@@ -68,7 +55,7 @@ public class JwtUtil {
                 .compact();
         } else {
             return BEARER_PREFIX + Jwts.builder()
-                .expiration(new Date(now.getTime() + REFRESH_TOKEN_TIME))
+                .expiration(new Date(now.getTime() + tokenType.getLifeTime()))
                 .claim("category", tokenType.name())
                 .claim("user_email", userEmail)
                 .claim(AUTHORIZATION_KEY, role.getAuthority())
@@ -169,7 +156,7 @@ public class JwtUtil {
         refreshToken = URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
             .replaceAll("\\+", "%20");
         Cookie cookie = new Cookie(tokenType.name(), refreshToken);
-        cookie.setMaxAge(REFRESH_TOKEN_TIME.intValue() / 1000);
+        cookie.setMaxAge((int)tokenType.getLifeTime() / 1000);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
@@ -179,7 +166,7 @@ public class JwtUtil {
         refreshToken = URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
             .replaceAll("\\+", "%20");
         Cookie cookie = new Cookie(tokenType.name(), refreshToken);
-        cookie.setMaxAge(REFRESH_TOKEN_TIME.intValue() / 1000);
+        cookie.setMaxAge((int)tokenType.getLifeTime() / 1000);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;

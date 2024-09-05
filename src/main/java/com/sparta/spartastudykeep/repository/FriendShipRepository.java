@@ -5,6 +5,7 @@ import com.sparta.spartastudykeep.entity.Friendship;
 import com.sparta.spartastudykeep.entity.User;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface FriendShipRepository extends JpaRepository<Friendship, Long> {
@@ -15,8 +16,7 @@ public interface FriendShipRepository extends JpaRepository<Friendship, Long> {
 
     Optional<Friendship> findByRequesterAndReceiver(User requester, User receiver);
 
-    List<Friendship> findAllByReceiverAndStatus(User user, FriendShipStatus status);
+    Set<Friendship> findAllByReceiverAndStatus(User user, FriendShipStatus status);
 
-    boolean existsByRequesterAndReceiverAndStatus(User requester, User user,
-        FriendShipStatus friendShipStatus);
+    boolean existsByRequesterAndReceiverAndStatus(User requester, User receiver, FriendShipStatus friendShipStatus);
 }
