@@ -96,7 +96,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * @param refreshToken
      */
     private void addRefreshEntity(String userEmail, String refreshToken) {
-        Long refreshTokenTime = jwtUtil.getRefreshTokenTime();
+        Long refreshTokenTime = TokenType.REFRESH.getLifeTime();
         Date date = new Date(System.currentTimeMillis() + refreshTokenTime);
 
         RefreshEntity refreshEntity = RefreshEntity.builder()

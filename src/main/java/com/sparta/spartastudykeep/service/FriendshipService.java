@@ -12,6 +12,7 @@ import com.sparta.spartastudykeep.entity.User;
 import com.sparta.spartastudykeep.repository.FriendShipRepository;
 import com.sparta.spartastudykeep.repository.UserRepository;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,11 +45,12 @@ public class FriendshipService {
      */
     public void rejectFriendshipRequest(User user, Long requesterId) {
         User requester = getUserOrElseThrow(requesterId);
-        boolean isExists = friendShipRepository.existsByRequesterAndReceiverAndStatus(requester,
-            user,
-            FriendShipStatus.ACCEPTED);
 
-        if (isExists) {
+        if(!friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user, FriendShipStatus.WAITING)){
+            throw new NoSuchResourceException("거절할 요청이 없습니다.");
+        }
+
+        if (!friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user, FriendShipStatus.ACCEPTED)) {
             throw new AlreadyAcceptedException();
         }
 
@@ -88,7 +90,7 @@ public class FriendshipService {
      */
     @Transactional(readOnly = true)
     public List<FriendResponseDto> getFriendAll(User user) {
-        List<Friendship> friends = friendShipRepository.findAllByReceiverAndStatus(
+        Set<Friendship> friends = friendShipRepository.findAllByReceiverAndStatus(
             user, FriendShipStatus.ACCEPTED);
 
         return friends.stream()
@@ -97,13 +99,17 @@ public class FriendshipService {
     }
 
     /**
-     * 친구삭제 or 요청 거절
+     * 친구삭제
      *
      * @param user         현재 로그인 유저
-     * @param removeUserId 삭제(거절)할 친구(유저) 아이디
+     * @param removeUserId 삭제할 친구(유저) 아이디
      */
     public void removeFriendship(User user, Long removeUserId) {
         User removeUser = getUserOrElseThrow(removeUserId);
+        if(!friendShipRepository.existsByRequesterAndReceiverAndStatus(removeUser, user, FriendShipStatus.ACCEPTED)){
+            throw new AlreadyAcceptedException("이미 삭제된 친구입니다.");
+        }
+
         friendShipRepository.deleteByRequesterAndReceiver(removeUser, user);
         friendShipRepository.deleteByRequesterAndReceiver(user, removeUser);
     }
@@ -114,7 +120,7 @@ public class FriendshipService {
      * @param user
      */
     public List<FriendshipReceiveDto> getRecieveList(User user) {
-        List<Friendship> findAll = friendShipRepository.findAllByReceiverAndStatus(
+        Set<Friendship> findAll = friendShipRepository.findAllByReceiverAndStatus(
             user, FriendShipStatus.WAITING);
 
         return findAll.stream()

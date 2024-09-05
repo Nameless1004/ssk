@@ -43,4 +43,13 @@ public class Friendship {
     }
 
     // Getter, Setter 및 기타 메서드들
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Friendship) {
+            Friendship other = (Friendship) obj;
+            return requester.equals(other.receiver) && receiver.equals(other.requester) && status == other.status && status == FriendShipStatus.ACCEPTED;
+        }
+
+        return false;
+    }
 }
