@@ -116,7 +116,7 @@ public class BoardServiceTest {
         List<Board> board = br.findAllByUserIdIn(ids);
         System.out.println(board.size());
         for (Board b : board) {
-            System.out.println(b.getBoard_title());
+            System.out.println(b.getBoardTitle());
         }
     }
 }

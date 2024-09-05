@@ -33,7 +33,7 @@ class BookmarkServiceTest {
             PageRequest.of(0, 10, Direction.ASC, "createdAt"));
         for (Bookmark bookmark : bookmarks) {
             System.out.println(bookmark.getBoard()
-                .getBoard_title());
+                .getBoardTitle());
         }
     }
 

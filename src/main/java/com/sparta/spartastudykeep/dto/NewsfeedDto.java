@@ -18,8 +18,8 @@ public class NewsfeedDto {
         this.boardId = board.getId();
         this.authorId = board.getUser()
             .getId();
-        this.username = board.getUser_name();
-        this.title = board.getBoard_title();
+        this.username = board.getUserName();
+        this.title = board.getBoardTitle();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
     }

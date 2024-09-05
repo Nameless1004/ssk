@@ -48,10 +48,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDto getProfileById(UserDetailsImpl userDetails, Long id) {
-        User user = userRepository.findById(id)
-            .orElseThrow(
-                () -> new UserIdNotFoundException(id)
-            );
+        User user = userDetails.getUser();
         if (Objects.equals(userDetails.getUser()
             .getId(), id)) {
             return new UserResponseDto(user);
@@ -76,12 +73,7 @@ public class UserService {
     }
 
     public UserResponseDto updateUser(UserDetailsImpl userDetails, UserRequestDto requestDto) {
-        User user = userRepository.findById(userDetails.getUser()
-                .getId())
-            .orElseThrow(
-                () -> new UserIdNotFoundException(userDetails.getUser()
-                    .getId())
-            );
+        User user = userDetails.getUser();
         user.setDescription(requestDto.getDescription());
         User savedUser = userRepository.save(user);
         return new UserResponseDto(savedUser);
