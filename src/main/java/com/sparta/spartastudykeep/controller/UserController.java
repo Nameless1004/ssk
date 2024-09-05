@@ -36,17 +36,17 @@ public class UserController {
 //    }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDto> getUser(
+    public ResponseEntity<UserResponseDto> getMyProfile(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.getUser(userDetails));
+            .body(userService.getMyProfile(userDetails));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(
+    public ResponseEntity<UserResponseDto> getProfileById(
         @AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK)
-            .body(userService.getUserById(userDetails, id));
+            .body(userService.getProfileById(userDetails, id));
     }
 
     @GetMapping
