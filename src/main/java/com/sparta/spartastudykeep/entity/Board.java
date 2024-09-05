@@ -31,17 +31,17 @@ public class Board extends Timestamped {
     private User user;
 
     @Column(nullable = false)
-    private String user_name;
-    private String board_title;
-    private String board_contents;
+    private String userName;
+    private String boardTitle;
+    private String boardContents;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<Bookmark> bookmarks = new ArrayList<>();
 
-    public Board(User user, String un, String bt, String bc) {
+    public Board(User user, String userName, String boardTitle, String boardContents) {
         this.user = user;
-        user_name = un;
-        board_title = bt;
-        board_contents = bc;
+        this.userName = userName;
+        this.boardTitle = boardTitle;
+        this.boardContents = boardContents;
     }
 }

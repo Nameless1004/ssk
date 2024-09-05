@@ -5,9 +5,9 @@ import lombok.Getter;
 @Getter
 public class BoardGetTitleResponseDto {
 
-    private final String board_title;
+    private final String boardTitle;
 
-    public BoardGetTitleResponseDto(String board_title) {
-        this.board_title = board_title;
+    public BoardGetTitleResponseDto(String boardTitle) {
+        this.boardTitle = boardTitle;
     }
 }

@@ -11,21 +11,21 @@ import lombok.NoArgsConstructor;
 public class BoardResponseDto {
 
     private Long id;
-    private String board_title;
-    private String board_contents;
+    private String boardTitle;
+    private String boardContents;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long userId;
-    private String user_name;
+    private String userName;
 
     public BoardResponseDto(Board board, User user) {
         this.id = board.getId();
-        this.board_title = board.getBoard_title();
-        this.board_contents = board.getBoard_contents();
+        this.boardTitle = board.getBoardTitle();
+        this.boardContents = board.getBoardContents();
         this.createdAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
         this.userId = user.getId();
-        this.user_name = user.getUsername();
+        this.userName = user.getUsername();
     }
 }
 

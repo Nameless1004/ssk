@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 public class BoardRequestDto {
 
 
-    private String board_title;
-    private String board_contents;
+    private String boardTitle;
+    private String boardContents;
 }
 

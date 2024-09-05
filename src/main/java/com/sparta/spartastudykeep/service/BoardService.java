@@ -37,10 +37,10 @@ public class BoardService {
     public BoardResponseDto saveBoard(User user, BoardRequestDto boardRequestDto) {
 
         Board newBoard = new Board();
-        newBoard.setBoard_title(boardRequestDto.getBoard_title());
-        newBoard.setBoard_contents(boardRequestDto.getBoard_contents());
+        newBoard.setBoardTitle(boardRequestDto.getBoardTitle());
+        newBoard.setBoardContents(boardRequestDto.getBoardContents());
         newBoard.setUser(user);
-        newBoard.setUser_name(user.getUsername());
+        newBoard.setUserName(user.getUsername());
 
         Board saveBoard = boardRepository.save(newBoard);
         return new BoardResponseDto(saveBoard, user);
@@ -80,8 +80,8 @@ public class BoardService {
         }
 
         // 작성한 유저가 맞다.
-        board.setBoard_title(boardRequestDto.getBoard_title());
-        board.setBoard_contents(boardRequestDto.getBoard_contents());
+        board.setBoardTitle(boardRequestDto.getBoardTitle());
+        board.setBoardContents(boardRequestDto.getBoardContents());
 
         Board updatedBoard = boardRepository.save(board);
         return new BoardResponseDto(updatedBoard, user);
