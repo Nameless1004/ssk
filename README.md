@@ -91,7 +91,7 @@
 * 북마크 모두 삭제
 
 <details>
-	<summary><h1>트러블 슈팅</h1></summary>
+	<summary><h1>💥트러블 슈팅</h1></summary>
 	<img src= "https://github.com/user-attachments/assets/c4ec07dc-3521-4220-a356-85d67a1ccfa1"/>
  	<img src="https://github.com/user-attachments/assets/2b5cdd19-6c9a-4562-9443-dd5a65612633"/>
 </details>
