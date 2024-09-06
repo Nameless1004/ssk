@@ -32,7 +32,7 @@ public class FriendshipService {
      * @param requestDto 친구요청 받을 유저의 아이디
      */
     public void requestFriendship(User user, FriendRequestDto requestDto) {
-        User receiver = getUserOrElseThrow(requestDto.getReceiverId());
+        User receiver = userRepository.getUserOrElseThrow(requestDto.getReceiverId());
         Friendship friendship = new Friendship(user, receiver);
         friendShipRepository.save(friendship);
     }
@@ -44,7 +44,7 @@ public class FriendshipService {
      * @param requesterId 친구요청한 유저의 아이디
      */
     public void rejectFriendshipRequest(User user, Long requesterId) {
-        User requester = getUserOrElseThrow(requesterId);
+        User requester = userRepository.getUserOrElseThrow(requesterId);
 
         if(!friendShipRepository.existsByRequesterAndReceiverAndStatus(requester, user, FriendShipStatus.WAITING)){
             throw new NoSuchResourceException("거절할 요청이 없습니다.");
@@ -64,7 +64,7 @@ public class FriendshipService {
      * @param requesterId 친구요청한 유저의 아이디
      */
     public void acceptFriendShip(User user, Long requesterId) {
-        User requester = getUserOrElseThrow(requesterId);
+        User requester = userRepository.getUserOrElseThrow(requesterId);
 
         Friendship request = friendShipRepository.findByRequesterAndReceiver(requester, user)
             .orElseThrow(() -> new NoSuchResourceException("수락할 요청이 없습니다."));
@@ -105,7 +105,7 @@ public class FriendshipService {
      * @param removeUserId 삭제할 친구(유저) 아이디
      */
     public void removeFriendship(User user, Long removeUserId) {
-        User removeUser = getUserOrElseThrow(removeUserId);
+        User removeUser = userRepository.getUserOrElseThrow(removeUserId);
         if(!friendShipRepository.existsByRequesterAndReceiverAndStatus(removeUser, user, FriendShipStatus.ACCEPTED)){
             throw new AlreadyAcceptedException("이미 삭제된 친구입니다.");
         }
@@ -142,10 +142,4 @@ public class FriendshipService {
     public void removeAllFriendship(User user) {
         friendShipRepository.deleteAllByRequesterOrReceiver(user, user);
     }
-
-    private User getUserOrElseThrow(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(InvalidIdException::new);
-    }
-
 }

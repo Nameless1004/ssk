@@ -28,7 +28,7 @@ public class BookmarkService {
      * @param boardId 추가할 보드 아이디
      */
     public void addBookmark(User user, Long boardId) {
-        Board board = getBoard(boardId);
+        Board board = boardRepository.getBoardOrElseThrow(boardId);
 
         Bookmark bookmark = new Bookmark(user, board);
         bookmarkRepository.save(bookmark);
@@ -41,11 +41,8 @@ public class BookmarkService {
      * @param boardId 제거할 보드 아이디
      */
     public void removeBookmark(User user, Long boardId) {
-        if(!boardRepository.existsById(boardId)) {
-            throw new InvalidIdException("해당 보드가 존재하지 않습니다.");
-        }
-
-        bookmarkRepository.deleteByUserIdAndBoardId(user.getId(), boardId);
+        Board board = boardRepository.getBoardOrElseThrow(boardId);
+        bookmarkRepository.deleteByUserAndBoard(user, board);
     }
 
     /**
@@ -67,10 +64,5 @@ public class BookmarkService {
      */
     public void removeAllBookmark(User user) {
         bookmarkRepository.deleteAllByUser(user);
-    }
-
-    private Board getBoard(Long boardId) {
-        return boardRepository.findById(boardId)
-            .orElseThrow(() -> new InvalidIdException("해당 보드가 존재하지 않습니다."));
     }
 }

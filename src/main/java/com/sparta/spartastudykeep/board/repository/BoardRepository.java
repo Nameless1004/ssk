@@ -13,7 +13,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findAllByUserIdIn(List<Long> userId);
 
-    default void notFindBoard(Long boardId){
-        findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
+    default Board getBoardOrElseThrow(Long boardId){
+        return findById(boardId).orElseThrow(() -> new InvalidIdException("ERROR!! 해당 게시글을 찾을 수 없습니다."));
     }
 }

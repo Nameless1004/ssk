@@ -1,5 +1,6 @@
 package com.sparta.spartastudykeep.friend.controller;
 
+import com.sparta.spartastudykeep.common.aop.MeasureExecutionTime;
 import com.sparta.spartastudykeep.friend.dto.FriendRequestDto;
 import com.sparta.spartastudykeep.friend.dto.FriendResponseDto;
 import com.sparta.spartastudykeep.friend.dto.FriendshipReceiveDto;
@@ -86,6 +87,7 @@ public class FriendshipController {
      *
      * @param userDetails 현재 로그인 유저
      */
+    @MeasureExecutionTime
     @GetMapping("/api/friends")
     public ResponseEntity<List<FriendResponseDto>> getFriends(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {

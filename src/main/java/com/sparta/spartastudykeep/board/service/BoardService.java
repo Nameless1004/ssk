@@ -1,5 +1,6 @@
 package com.sparta.spartastudykeep.board.service;
 
+import com.sparta.spartastudykeep.common.aop.MeasureExecutionTime;
 import com.sparta.spartastudykeep.common.exception.InvalidIdException;
 import com.sparta.spartastudykeep.common.exception.UnAuthorizedAccessException;
 import com.sparta.spartastudykeep.board.dto.BoardRequestDto;
@@ -104,6 +105,7 @@ public class BoardService {
         boardRepository.deleteById(boardId);
     }
 
+    @Transactional(readOnly = true)
     public Page<NewsfeedDto> getNewsfeed(User user, Pageable pageable) {
 
         List<FriendResponseDto> friends = friendshipService.getFriendAll(user);
